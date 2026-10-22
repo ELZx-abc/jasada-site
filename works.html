@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142b49">
+  <meta name="description" content="รายการงานที่ส่งในเว็บไซต์ My Profile">
+  <title>My Profile | งานที่ส่ง</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body data-page="works">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="My Profile หน้าแรก">My Profile<span class="brand-dot">.</span><svg class="ui-icon brand-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg></a>
+      <nav class="site-nav" aria-label="เมนูหลัก">
+        <a class="nav-link" href="index.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"></path></svg>หน้าแรก</a>
+        <a class="nav-link" href="profile.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg>ประวัติส่วนตัว</a>
+        <a class="nav-link is-active" href="works.html" aria-current="page"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>งานที่ส่ง</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container content-page works-page">
+    <div class="works-heading">
+      <div class="page-heading">
+        <p class="eyebrow">สิ่งที่ได้ลงมือทำ</p>
+        <h1><svg class="ui-icon works-heading-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>งานที่ส่ง</h1>
+        <p>รวมผลงานของฉันไว้ที่นี้!</p>
+      </div>
+      <div class="works-controls">
+        <button class="button button-light owner-login-button" id="owner-login-button" type="button">เข้าสู่ระบบเจ้าของ</button>
+        <button class="button button-dark add-work-button" id="add-work-button" type="button" hidden>เพิ่มผลงาน <span aria-hidden="true">＋</span></button>
+        <button class="button button-light owner-logout-button" id="owner-logout-button" type="button" hidden>ออกจากระบบ</button>
+      </div>
+    </div>
+
+    <p class="page-status" id="page-status" role="status" aria-live="polite"></p>
+    <section class="works-grid" id="works-grid" aria-label="รายการผลงาน"></section>
+  </main>
+
+  <dialog class="work-dialog" id="work-dialog" aria-labelledby="dialog-title">
+    <form id="work-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">จัดการผลงาน</p>
+          <h2 id="dialog-title">เพิ่มผลงาน</h2>
+        </div>
+        <button class="dialog-close" id="close-dialog" type="button" aria-label="ปิดหน้าต่าง">×</button>
+      </div>
+      <input id="work-id" name="id" type="hidden">
+      <label class="form-field" for="work-title">ชื่อผลงาน <span class="required-mark">*</span>
+        <input id="work-title" name="title" type="text" maxlength="100" required>
+      </label>
+      <label class="form-field" for="work-description">รายละเอียดสั้น ๆ
+        <textarea id="work-description" name="description" rows="3" maxlength="300"></textarea>
+      </label>
+      <label class="form-field" for="work-date">วันที่ส่ง
+        <input id="work-date" name="date" type="date">
+      </label>
+      <label class="form-field" for="work-image">รูปผลงาน (ไม่บังคับ)
+        <input id="work-image" name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+        <span class="field-help">รองรับ JPG, JPEG, PNG และ WEBP</span>
+      </label>
+      <label class="checkbox-field" id="remove-image-row" hidden>
+        <input id="remove-image" name="removeImage" type="checkbox">
+        ลบรูปที่บันทึกไว้อยู่
+      </label>
+      <p class="form-error" id="form-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="button button-light" id="cancel-dialog" type="button">ยกเลิก</button>
+        <button class="button button-dark" type="submit">บันทึกผลงาน</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="work-dialog" id="login-dialog" aria-labelledby="login-dialog-title">
+    <form id="login-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">สำหรับเจ้าของเว็บไซต์</p>
+          <h2 id="login-dialog-title">เข้าสู่ระบบ</h2>
+        </div>
+        <button class="dialog-close" id="close-login-dialog" type="button" aria-label="ปิดหน้าต่าง">×</button>
+      </div>
+      <label class="form-field" for="owner-pin">PIN เจ้าของเว็บไซต์
+        <input id="owner-pin" name="pin" type="password" inputmode="numeric" pattern="([0-9]{4}|[0-9]{10,12})" minlength="4" maxlength="12" autocomplete="one-time-code" required>
+        <span class="field-help">PIN จริงใช้ 10–12 หลัก; 4 หลักใช้ได้เฉพาะทดสอบ Supabase ในเครื่อง</span>
+      </label>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="button button-light" id="cancel-login" type="button">ยกเลิก</button>
+        <button class="button button-dark" type="submit">เข้าสู่ระบบ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="footer-inner"><span>My Profile By - Jasada Kuesakul</span></div>
+  </footer>
+</body>
+</html>

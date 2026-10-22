@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142b49">
+  <meta name="description" content="ประวัติส่วนตัวและข้อมูลแนะนำตัว">
+  <title>My Profile | ประวัติส่วนตัว</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="My Profile หน้าแรก">My Profile<span class="brand-dot">.</span><svg class="ui-icon brand-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg></a>
+      <nav class="site-nav" aria-label="เมนูหลัก">
+        <a class="nav-link" href="index.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"></path></svg>หน้าแรก</a>
+        <a class="nav-link is-active" href="profile.html" aria-current="page"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg>ประวัติส่วนตัว</a>
+        <a class="nav-link" href="works.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>งานที่ส่ง</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container content-page">
+    <div class="page-heading">
+      <p class="eyebrow">เกี่ยวกับฉัน</p>
+      <h1><svg class="ui-icon profile-heading-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg>ประวัติส่วนตัว</h1>
+      <p>ข้อมูลแนะนำตัวเบื้องต้น</p>
+    </div>
+
+    <section class="profile-layout" aria-label="ข้อมูลส่วนตัว">
+      <div class="profile-photo-column">
+        <div class="profile-image-frame profile-photo-frame">
+          <img class="profile-photo" src="profile-sports-photo.jpg" alt="เจษฎา เกื้อสกุล ยืนถือถ้วยรางวัลในสนามกีฬา">
+        </div>
+      </div>
+      <div class="profile-details">
+        <dl class="profile-grid">
+          <div class="profile-item"><dt>ชื่อ-นามสกุล</dt><dd>เจษฎา เกื้อสกุล</dd></div>
+          <div class="profile-item"><dt>ชื่อเล่น</dt><dd>แบงค์</dd></div>
+          <div class="profile-item"><dt>อายุ</dt><dd>18 ปี</dd></div>
+          <div class="profile-item"><dt>สถานศึกษา</dt><dd>วิทยาลัยเทคนิคนครศรีธรรมราช</dd></div>
+          <div class="profile-item"><dt>ระดับชั้น</dt><dd>ปวส.1</dd></div>
+          <div class="profile-item"><dt>สาขาวิชา</dt><dd>เทคโนโลยีสารสนเทศ</dd></div>
+          <div class="profile-item">
+            <dt>ทักษะและความสามารถ</dt>
+            <dd>
+              <ul class="profile-tags">
+                <li>ออกแบบกราฟิก</li>
+                <li>ตัดต่อคลิป</li>
+                <li>ทำสไลด์นำเสนอ</li>
+                <li>Microsoft Word</li>
+                <li>Microsoft Excel</li>
+                <li>ใช้งานคอมพิวเตอร์</li>
+              </ul>
+            </dd>
+          </div>
+          <div class="profile-item">
+            <dt>งานอดิเรก</dt>
+            <dd>
+              <ul class="profile-tags">
+                <li>เล่นบาสเกตบอล</li>
+                <li>ถ่ายภาพ</li>
+                <li>ถ่ายวิดีโอ</li>
+                <li>เลี้ยงสุนัข</li>
+                <li>ตัดต่อคลิป</li>
+              </ul>
+            </dd>
+          </div>
+          <div class="profile-item"><dt><svg class="ui-icon profile-goal-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v3"></path><path d="M12 18v3"></path><path d="M3 12h3"></path><path d="M18 12h3"></path><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="3"></circle><path d="m12 12 5-5"></path></svg>เป้าหมาย</dt><dd>เป้าหมายของผมคือการพัฒนาทักษะด้านกราฟิกดีไซน์ให้ดียิ่งขึ้น</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner"><span>My Profile By - Jasada Kuesakul</span></div>
+  </footer>
+</body>
+</html>

@@ -214,8 +214,10 @@ button { color: inherit; }
 .work-card-date { margin: auto 0 0; padding-top: 10px; color: var(--muted); font-size: 11px; }
 .work-card-actions { padding: 0 15px 14px; display: flex; gap: 8px; }
 .small-button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); cursor: pointer; font-size: 12px; transition: background-color .18s ease; }
-.small-button:hover { background: var(--soft); border-color: #91bde1; }
-.empty-work-card .work-card-body { min-height: 124px; }
+.works-empty-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 56px 20px; border: 1px dashed var(--line); border-radius: 12px; background: rgba(255, 255, 255, .5); }
+.works-empty-icon { font-size: 42px; margin-bottom: 12px; }
+.works-empty-title { margin: 0; font-size: 17px; font-weight: 600; color: var(--ink); }
+.works-empty-desc { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
 
 .work-dialog { width: min(520px, calc(100% - 32px)); max-height: min(90vh, 800px); padding: 28px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); }
 .work-dialog::backdrop { background: rgba(20, 20, 20, .45); }

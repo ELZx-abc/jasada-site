@@ -88,9 +88,9 @@
         </div>
         <button class="dialog-close" id="close-login-dialog" type="button" aria-label="ปิดหน้าต่าง">×</button>
       </div>
-      <label class="form-field" for="owner-pin">PIN เจ้าของเว็บไซต์
-        <input id="owner-pin" name="pin" type="password" inputmode="numeric" pattern="([0-9]{4}|[0-9]{10,12})" minlength="4" maxlength="12" autocomplete="one-time-code" required>
-        <span class="field-help">PIN จริงใช้ 10–12 หลัก; 4 หลักใช้ได้เฉพาะทดสอบ Supabase ในเครื่อง</span>
+      <label class="form-field" for="owner-pin">PIN เจ้าของเว็บไซต์ (4 หลัก)
+        <input id="owner-pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" minlength="4" maxlength="4" autocomplete="current-password" placeholder="••••" required>
+        <span class="field-help">กรอกรหัส PIN 4 หลักเพื่อเข้าสู่ระบบจัดการผลงาน</span>
       </label>
       <p class="form-error" id="login-error" role="alert"></p>
       <div class="dialog-actions">

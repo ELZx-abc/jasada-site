@@ -32,10 +32,11 @@
   const loginError = document.getElementById("login-error");
   const ownerPinInput = document.getElementById("owner-pin");
 
+  const DEFAULT_PIN_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // SHA-256 ของ "1234"
+  const STORAGE_KEY_AUTH = "jasada_site_is_owner";
+
   let client;
   let works = [];
-  let ownerId = null;
-  let currentUser = null;
 
   function makeElement(tag, className, text) {
     const element = document.createElement(tag);
@@ -45,7 +46,16 @@
   }
 
   function isOwner() {
-    return Boolean(currentUser && ownerId && currentUser.id === ownerId);
+    return sessionStorage.getItem(STORAGE_KEY_AUTH) === "true";
+  }
+
+  function setOwnerState(statusBool) {
+    if (statusBool) {
+      sessionStorage.setItem(STORAGE_KEY_AUTH, "true");
+    } else {
+      sessionStorage.removeItem(STORAGE_KEY_AUTH);
+    }
+    syncControls();
   }
 
   function syncControls() {
@@ -63,21 +73,36 @@
     return `${Number(parts[2])}/${Number(parts[1])}/${parts[0]}`;
   }
 
+  async function sha256(value) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+    return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
   async function renderWorks() {
     grid.replaceChildren();
-    const count = Math.max(6, works.length);
 
-    for (let index = 0; index < count; index += 1) {
-      const work = works[index];
-      const card = makeElement("article", work ? "work-card" : "work-card empty-work-card");
-      const imageFrame = makeElement(work ? "button" : "div", "work-image-frame");
-      imageFrame.setAttribute("aria-label", work ? `รูปผลงาน: ${work.title}` : "ช่องว่างสำหรับรูปผลงาน");
-      if (work) {
-        imageFrame.type = "button";
-        imageFrame.addEventListener("click", () => showWorkDetails(work));
-      }
+    if (works.length === 0) {
+      const emptyState = makeElement("div", "works-empty-state");
+      const icon = makeElement("span", "works-empty-icon", "📁");
+      icon.setAttribute("aria-hidden", "true");
+      const title = makeElement("h2", "works-empty-title", "ยังไม่มีรายการผลงานในขณะนี้");
+      const descText = isOwner()
+        ? "กดปุ่ม \"เพิ่มผลงาน\" ด้านบนเพื่อเพิ่มผลงานแรกของคุณได้เลยครับ"
+        : "เจ้าของเว็บไซต์ยังไม่ได้เพิ่มรายการผลงาน";
+      const desc = makeElement("p", "works-empty-desc", descText);
+      emptyState.append(icon, title, desc);
+      grid.append(emptyState);
+      return;
+    }
 
-      if (work && work.image_path) {
+    for (const work of works) {
+      const card = makeElement("article", "work-card");
+      const imageFrame = makeElement("button", "work-image-frame");
+      imageFrame.type = "button";
+      imageFrame.setAttribute("aria-label", `รูปผลงาน: ${work.title}`);
+      imageFrame.addEventListener("click", () => showWorkDetails(work));
+
+      if (work.image_path) {
         const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
         const image = document.createElement("img");
         image.src = data.publicUrl;
@@ -86,35 +111,29 @@
       }
 
       const body = makeElement("div", "work-card-body");
-      if (work) {
-        const title = makeElement("h2", "work-card-title");
-        const titleButton = makeElement("button", "work-card-title-button", work.title);
-        titleButton.type = "button";
-        titleButton.setAttribute("aria-label", `ดูรายละเอียดผลงาน: ${work.title}`);
-        titleButton.addEventListener("click", () => showWorkDetails(work));
-        title.append(titleButton);
-        body.append(title);
-        if (work.description) body.append(makeElement("p", "work-card-description", work.description));
-        if (work.work_date) body.append(makeElement("p", "work-card-date", formatDate(work.work_date)));
-        card.append(imageFrame, body);
+      const title = makeElement("h2", "work-card-title");
+      const titleButton = makeElement("button", "work-card-title-button", work.title);
+      titleButton.type = "button";
+      titleButton.setAttribute("aria-label", `ดูรายละเอียดผลงาน: ${work.title}`);
+      titleButton.addEventListener("click", () => showWorkDetails(work));
+      title.append(titleButton);
+      body.append(title);
+      if (work.description) body.append(makeElement("p", "work-card-description", work.description));
+      if (work.work_date) body.append(makeElement("p", "work-card-date", formatDate(work.work_date)));
+      card.append(imageFrame, body);
 
-        if (isOwner()) {
-          const actions = makeElement("div", "work-card-actions");
-          const editButton = makeElement("button", "small-button", "แก้ไข");
-          editButton.type = "button";
-          editButton.addEventListener("click", () => showEditDialog(work));
-          const deleteButton = makeElement("button", "small-button", "ลบ");
-          deleteButton.type = "button";
-          deleteButton.addEventListener("click", () => removeWork(work));
-          actions.append(editButton, deleteButton);
-          card.append(actions);
-        }
-      } else {
-        body.append(makeElement("h2", "work-card-title", ""));
-        body.append(makeElement("p", "work-card-description", ""));
-        body.append(makeElement("p", "work-card-date", ""));
-        card.append(imageFrame, body);
+      if (isOwner()) {
+        const actions = makeElement("div", "work-card-actions");
+        const editButton = makeElement("button", "small-button", "แก้ไข");
+        editButton.type = "button";
+        editButton.addEventListener("click", () => showEditDialog(work));
+        const deleteButton = makeElement("button", "small-button", "ลบ");
+        deleteButton.type = "button";
+        deleteButton.addEventListener("click", () => removeWork(work));
+        actions.append(editButton, deleteButton);
+        card.append(actions);
       }
+
       grid.append(card);
     }
   }
@@ -161,7 +180,7 @@
 
   function showAddDialog() {
     if (!isOwner()) {
-      status.textContent = "ต้องเข้าสู่ระบบด้วยบัญชีเจ้าของเว็บไซต์ก่อนจึงจะจัดการผลงานได้";
+      status.textContent = "ต้องเข้าสู่ระบบด้วยรหัส PIN ก่อนจึงจะจัดการผลงานได้";
       return;
     }
     resetWorkForm();
@@ -191,7 +210,7 @@
 
   async function uploadImage(file) {
     const extension = file.name.split(".").pop().toLowerCase();
-    const path = `${currentUser.id}/${crypto.randomUUID()}.${extension}`;
+    const path = `works/${crypto.randomUUID()}.${extension}`;
     const { error } = await client.storage.from(IMAGE_BUCKET).upload(path, file, {
       contentType: file.type,
       upsert: false
@@ -210,7 +229,7 @@
     event.preventDefault();
     formError.textContent = "";
     if (!isOwner()) {
-      formError.textContent = "เซสชันเจ้าของเว็บไซต์หมดอายุ กรุณาเข้าสู่ระบบใหม่";
+      formError.textContent = "กรุณาเข้าสู่ระบบด้วยรหัส PIN ก่อนบันทึกผลงาน";
       return;
     }
 
@@ -316,61 +335,43 @@
   loginButton.addEventListener("click", () => {
     loginError.textContent = "";
     loginDialog.showModal();
+    ownerPinInput.value = "";
     ownerPinInput.focus();
   });
   document.getElementById("close-login-dialog").addEventListener("click", () => loginDialog.close());
   document.getElementById("cancel-login").addEventListener("click", () => loginDialog.close());
+
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     loginError.textContent = "";
-    const pin = ownerPinInput.value;
-    if (!/^(?:[0-9]{4}|[0-9]{10,12})$/.test(pin)) {
-      loginError.textContent = "กรุณากรอก PIN 4 หลักสำหรับทดสอบในเครื่อง หรือ 10–12 หลักสำหรับระบบจริง";
+    const pin = ownerPinInput.value.trim();
+    if (!/^[0-9]{4}$/.test(pin)) {
+      loginError.textContent = "กรุณากรอก PIN เป็นตัวเลข 4 หลัก";
       ownerPinInput.focus();
       return;
     }
 
-    try {
-      const { data, error } = await client.functions.invoke("owner-pin-login", {
-        body: { pin }
-      });
-      if (error) throw error;
-      if (!data || typeof data.token_hash !== "string") {
-        throw new Error("เซิร์ฟเวอร์ตอบกลับข้อมูลเข้าสู่ระบบไม่ถูกต้อง");
-      }
-      const { data: authData, error: authError } = await client.auth.verifyOtp({
-        token_hash: data.token_hash,
-        type: "magiclink"
-      });
-      if (authError) throw authError;
-      if (!authData.user || authData.user.id !== ownerId) {
-        await client.auth.signOut();
-        throw new Error("PIN นี้ไม่ได้รับสิทธิ์เป็นเจ้าของเว็บไซต์");
-      }
+    const hashedInput = await sha256(pin);
+    const configuredHash = window.SITE_OWNER_PIN_HASH || DEFAULT_PIN_HASH;
+
+    if (hashedInput === configuredHash) {
+      setOwnerState(true);
       ownerPinInput.value = "";
       loginDialog.close();
+      status.textContent = "เข้าสู่ระบบเจ้าของเรียบร้อยแล้ว";
       await loadWorks();
-      if (!isOwner()) {
-        status.textContent = "บัญชีนี้ไม่มีสิทธิ์จัดการผลงาน กรุณาใช้บัญชีเจ้าของเว็บไซต์";
-      }
-    } catch (error) {
+    } else {
       ownerPinInput.value = "";
-      loginError.textContent = error.message.includes("Edge Function returned a non-2xx")
-        ? "เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ PIN หรือลองใหม่ภายหลัง"
-        : `เข้าสู่ระบบไม่สำเร็จ: ${error.message}`;
+      ownerPinInput.focus();
+      loginError.textContent = "รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
     }
   });
-  logoutButton.addEventListener("click", async () => {
-    try {
-      const { error } = await client.auth.signOut();
-      if (error) throw error;
-      currentUser = null;
-      syncControls();
-      status.textContent = "ออกจากระบบแล้ว";
-    } catch (error) {
-      status.textContent = `ออกจากระบบไม่สำเร็จ: ${error.message}`;
-    }
+
+  logoutButton.addEventListener("click", () => {
+    setOwnerState(false);
+    status.textContent = "ออกจากระบบเรียบร้อยแล้ว";
   });
+
   document.getElementById("add-work-button").addEventListener("click", showAddDialog);
   document.getElementById("close-dialog").addEventListener("click", () => dialog.close());
   document.getElementById("cancel-dialog").addEventListener("click", () => dialog.close());
@@ -381,8 +382,9 @@
   form.addEventListener("submit", submitWork);
 
   async function initialize() {
+    syncControls();
+
     if (!window.supabase) {
-      loginButton.disabled = true;
       status.textContent = "โหลดไลบรารี Supabase ไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
       await renderWorks();
       return;
@@ -394,52 +396,16 @@
       window.SUPABASE_URL.includes("your-project.supabase.co") ||
       window.SUPABASE_ANON_KEY.startsWith("sb_publishable_ใส่คีย์ของคุณ")
     ) {
-      loginButton.disabled = true;
-      status.textContent = "ยังไม่ได้ตั้งค่า Supabase กรุณากรอก Project URL และ publishable/anon key ใน supabase-config.js";
+      status.textContent = "ยังไม่ได้ตั้งค่า Supabase กรุณากรอก Project URL และ key ใน supabase-config.js";
       await renderWorks();
       return;
     }
 
     client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-
-    const settingsResult = await client
-      .from("site_settings")
-      .select("owner_id")
-      .eq("id", 1)
-      .single();
-    if (settingsResult.error) {
-      loginButton.disabled = true;
-      status.textContent = `โหลดการตั้งค่าสิทธิ์ไม่สำเร็จ: ${settingsResult.error.message}`;
-      await renderWorks();
-      return;
-    }
-    ownerId = settingsResult.data.owner_id;
-
-    const sessionResult = await client.auth.getSession();
-    if (sessionResult.error) {
-      status.textContent = `ตรวจสอบสถานะเข้าสู่ระบบไม่สำเร็จ: ${sessionResult.error.message}`;
-    }
-    currentUser = sessionResult.data.session?.user || null;
-    syncControls();
-    if (currentUser && !isOwner()) {
-      status.textContent = "บัญชีนี้ไม่มีสิทธิ์จัดการผลงาน กรุณาใช้บัญชีเจ้าของเว็บไซต์";
-    }
     await loadWorks();
-
-    client.auth.onAuthStateChange((_event, session) => {
-      currentUser = session?.user || null;
-      syncControls();
-      if (isOwner()) {
-        queueMicrotask(() => {
-          loadWorks().catch((error) => {
-            status.textContent = `โหลดผลงานไม่สำเร็จ: ${error.message}`;
-          });
-        });
-      }
-    });
   }
 
   initialize().catch((error) => {
-    status.textContent = `เริ่มต้นระบบผลงานไม่สำเร็จ: ${error.message}`;
+    status.textContent = `โหลดผลงานไม่สำเร็จ: ${error.message}`;
   });
 })();

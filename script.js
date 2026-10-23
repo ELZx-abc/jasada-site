@@ -1,6 +1,21 @@
 "use strict";
 
 (() => {
+  document.addEventListener("copy", (event) => {
+    const target = event.target;
+    const isEditable = target instanceof HTMLElement
+      && (target.isContentEditable || target.matches("input, textarea"));
+    if (!isEditable) event.preventDefault();
+  });
+
+  document.addEventListener("dragstart", (event) => {
+    if (event.target instanceof HTMLImageElement) event.preventDefault();
+  });
+
+  document.addEventListener("contextmenu", (event) => {
+    if (event.target instanceof HTMLImageElement) event.preventDefault();
+  });
+
   const nav = document.querySelector(".site-nav");
   const navLinks = nav ? Array.from(nav.querySelectorAll(".nav-link")) : [];
   const activeNavLink = navLinks.find((link) => link.classList.contains("is-active"));

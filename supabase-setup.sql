@@ -1,7 +1,3 @@
--- การตั้งค่าตารางและ Storage สำหรับระบบ Works แบบเรียบง่าย (ไม่ต้องใช้ Supabase Auth / ไม่ต้องใช้ Edge Function)
--- รันไฟล์นี้ใน Supabase Dashboard > SQL Editor เพื่อเปิดสิทธิ์ให้ anon สามารถ เพิ่ม/ลบ/แก้ไข ผลงาน และอัปโหลดรูปภาพได้
-
--- 1. สร้างตารางผลงาน (works)
 create table if not exists public.works (
   id uuid primary key default gen_random_uuid(),
   title text not null check (char_length(trim(title)) between 1 and 100),
@@ -11,7 +7,6 @@ create table if not exists public.works (
   created_at timestamptz not null default now()
 );
 
--- 2. ปิด RLS เพื่อให้สิทธิ์ผ่าน anon key บันทึกและอ่านได้โดยตรง (ตรวจ PIN 4 หลักที่ฝั่งเว็บ)
 alter table public.works disable row level security;
 
 -- ให้สิทธิ์กับ anon และ authenticated ในการจัดการข้อมูลตาราง

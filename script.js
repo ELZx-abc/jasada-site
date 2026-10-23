@@ -13,6 +13,12 @@
   const loginButton = document.getElementById("owner-login-button");
   const logoutButton = document.getElementById("owner-logout-button");
   const dialog = document.getElementById("work-dialog");
+  const workDetailDialog = document.getElementById("work-detail-dialog");
+  const workDetailTitle = document.getElementById("work-detail-title");
+  const workDetailDescription = document.getElementById("work-detail-description");
+  const workDetailDate = document.getElementById("work-detail-date");
+  const workDetailImageFrame = document.getElementById("work-detail-image-frame");
+  const workDetailImage = document.getElementById("work-detail-image");
   const form = document.getElementById("work-form");
   const titleInput = document.getElementById("work-title");
   const descriptionInput = document.getElementById("work-description");
@@ -64,8 +70,12 @@
     for (let index = 0; index < count; index += 1) {
       const work = works[index];
       const card = makeElement("article", work ? "work-card" : "work-card empty-work-card");
-      const imageFrame = makeElement("div", "work-image-frame");
+      const imageFrame = makeElement(work ? "button" : "div", "work-image-frame");
       imageFrame.setAttribute("aria-label", work ? `รูปผลงาน: ${work.title}` : "ช่องว่างสำหรับรูปผลงาน");
+      if (work) {
+        imageFrame.type = "button";
+        imageFrame.addEventListener("click", () => showWorkDetails(work));
+      }
 
       if (work && work.image_path) {
         const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
@@ -77,7 +87,13 @@
 
       const body = makeElement("div", "work-card-body");
       if (work) {
-        body.append(makeElement("h2", "work-card-title", work.title));
+        const title = makeElement("h2", "work-card-title");
+        const titleButton = makeElement("button", "work-card-title-button", work.title);
+        titleButton.type = "button";
+        titleButton.setAttribute("aria-label", `ดูรายละเอียดผลงาน: ${work.title}`);
+        titleButton.addEventListener("click", () => showWorkDetails(work));
+        title.append(titleButton);
+        body.append(title);
         if (work.description) body.append(makeElement("p", "work-card-description", work.description));
         if (work.work_date) body.append(makeElement("p", "work-card-date", formatDate(work.work_date)));
         card.append(imageFrame, body);
@@ -101,6 +117,28 @@
       }
       grid.append(card);
     }
+  }
+
+  function showWorkDetails(work) {
+    workDetailTitle.textContent = work.title;
+    workDetailDescription.textContent = work.description || "";
+    workDetailDescription.hidden = !work.description;
+    workDetailDate.textContent = work.work_date ? `วันที่ส่ง: ${formatDate(work.work_date)}` : "";
+    workDetailDate.hidden = !work.work_date;
+
+    if (work.image_path) {
+      const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
+      workDetailImage.src = data.publicUrl;
+      workDetailImage.alt = `รูปผลงานขนาดเต็ม: ${work.title}`;
+      workDetailImageFrame.hidden = false;
+    } else {
+      workDetailImage.removeAttribute("src");
+      workDetailImage.alt = "";
+      workDetailImageFrame.hidden = true;
+    }
+
+    workDetailDialog.showModal();
+    document.getElementById("close-work-detail").focus();
   }
 
   async function loadWorks() {
@@ -336,6 +374,10 @@
   document.getElementById("add-work-button").addEventListener("click", showAddDialog);
   document.getElementById("close-dialog").addEventListener("click", () => dialog.close());
   document.getElementById("cancel-dialog").addEventListener("click", () => dialog.close());
+  document.getElementById("close-work-detail").addEventListener("click", () => workDetailDialog.close());
+  workDetailDialog.addEventListener("click", (event) => {
+    if (event.target === workDetailDialog) workDetailDialog.close();
+  });
   form.addEventListener("submit", submitWork);
 
   async function initialize() {

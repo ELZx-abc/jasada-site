@@ -15,6 +15,18 @@
   <script src="script.js" defer></script>
 </head>
 <body data-page="works">
+  <div class="page-sparkles" aria-hidden="true">
+    <span class="side-sparkle side-sparkle-left side-sparkle-1"></span>
+    <span class="side-sparkle side-sparkle-right side-sparkle-2"></span>
+    <span class="side-sparkle side-sparkle-left side-sparkle-3"></span>
+    <span class="side-sparkle side-sparkle-right side-sparkle-4"></span>
+    <span class="side-sparkle side-sparkle-left side-sparkle-5"></span>
+    <span class="side-sparkle side-sparkle-right side-sparkle-6"></span>
+    <span class="side-sparkle side-sparkle-left side-sparkle-7"></span>
+    <span class="side-sparkle side-sparkle-right side-sparkle-8"></span>
+    <span class="side-sparkle side-sparkle-left side-sparkle-9"></span>
+    <span class="side-sparkle side-sparkle-right side-sparkle-10"></span>
+  </div>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="My Profile หน้าแรก">My Profile<span class="brand-dot">.</span><svg class="ui-icon brand-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg></a>
@@ -34,7 +46,7 @@
         <p>รวมผลงานของฉันไว้ที่นี้!</p>
       </div>
       <div class="works-controls">
-        <button class="button button-light owner-login-button" id="owner-login-button" type="button">เข้าสู่ระบบเจ้าของ</button>
+        <button class="button button-light owner-login-button" id="owner-login-button" type="button">ล็อคอินเพื่อส่งงาน</button>
         <button class="button button-dark add-work-button" id="add-work-button" type="button" hidden>เพิ่มผลงาน <span aria-hidden="true">＋</span></button>
         <button class="button button-light owner-logout-button" id="owner-logout-button" type="button" hidden>ออกจากระบบ</button>
       </div>
@@ -79,6 +91,23 @@
     </form>
   </dialog>
 
+  <dialog class="work-dialog work-detail-dialog" id="work-detail-dialog" aria-labelledby="work-detail-title">
+    <div class="work-detail-content">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">รายละเอียดผลงาน</p>
+          <h2 id="work-detail-title"></h2>
+        </div>
+        <button class="dialog-close" id="close-work-detail" type="button" aria-label="ปิดรายละเอียด">×</button>
+      </div>
+      <p class="work-detail-description" id="work-detail-description" hidden></p>
+      <p class="work-detail-date" id="work-detail-date" hidden></p>
+      <div class="work-detail-image-frame" id="work-detail-image-frame" hidden>
+        <img id="work-detail-image" alt="">
+      </div>
+    </div>
+  </dialog>
+
   <dialog class="work-dialog" id="login-dialog" aria-labelledby="login-dialog-title">
     <form id="login-form">
       <div class="dialog-heading">
@@ -101,7 +130,20 @@
   </dialog>
 
   <footer class="site-footer">
-    <div class="footer-inner"><span>My Profile By - Jasada Kuesakul</span></div>
+    <div class="footer-inner">
+      <span>My Profile By - Jasada Kuesakul</span>
+      <nav class="footer-socials" aria-label="โซเชียลมีเดีย">
+        <span class="footer-contact-label">Contact</span>
+        <a class="footer-social-link footer-social-facebook" href="https://www.facebook.com/elzx.683364?locale=th_TH" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13.4 21v-8.2h2.8l.4-3.2h-3.2v-2c0-.9.3-1.5 1.6-1.5h1.7V3.2c-.3 0-1.3-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.3v2.3H7.2v3.2H10V21z"></path></svg>
+          <span>Facebook</span>
+        </a>
+        <a class="footer-social-link footer-social-instagram" href="https://www.instagram.com/elzvxrq?vrfl=MTNldDZkaDlvZ2VpaA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" class="instagram-dot"></circle></svg>
+          <span>Instagram</span>
+        </a>
+      </nav>
+    </div>
   </footer>
 </body>
 </html>

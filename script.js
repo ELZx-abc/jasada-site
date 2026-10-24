@@ -1,6 +1,50 @@
 "use strict";
 
 (() => {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.documentElement.classList.add("has-motion");
+
+  const scrollProgress = document.createElement("div");
+  scrollProgress.className = "scroll-progress";
+  scrollProgress.setAttribute("aria-hidden", "true");
+  document.body.append(scrollProgress);
+
+  let progressFrame = 0;
+  const updateScrollProgress = () => {
+    if (progressFrame) return;
+    progressFrame = requestAnimationFrame(() => {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      scrollProgress.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
+      progressFrame = 0;
+    });
+  };
+  window.addEventListener("scroll", updateScrollProgress, { passive: true });
+  window.addEventListener("resize", updateScrollProgress);
+  updateScrollProgress();
+
+  if (!reducedMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const tiltTargets = document.querySelectorAll(".hero-image-frame, .home-skill-card, .education-card, .work-card");
+    tiltTargets.forEach((target) => {
+      target.addEventListener("pointermove", (event) => {
+        const bounds = target.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+        target.style.setProperty("--tilt-x", `${x * 7}deg`);
+        target.style.setProperty("--tilt-y", `${y * -7}deg`);
+      });
+      target.addEventListener("pointerleave", () => {
+        target.style.setProperty("--tilt-x", "0deg");
+        target.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+
+    window.addEventListener("pointermove", (event) => {
+      document.body.style.setProperty("--pointer-x", `${event.clientX}px`);
+      document.body.style.setProperty("--pointer-y", `${event.clientY}px`);
+    }, { passive: true });
+  }
+
   document.addEventListener("copy", (event) => {
     const target = event.target;
     const isEditable = target instanceof HTMLElement

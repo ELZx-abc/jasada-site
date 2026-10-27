@@ -2,7 +2,53 @@
 
 (() => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.documentElement.classList.add("has-motion");
+
+  if (!reducedMotion && "IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
+    const addReveal = (element, direction) => {
+      element.classList.add("scroll-reveal");
+      element.dataset.revealDirection = direction;
+      revealObserver.observe(element);
+    };
+
+    const revealInAlternatingDirections = (selector) => {
+      document.querySelectorAll(selector).forEach((element, index) => {
+        addReveal(element, index % 2 === 0 ? "left" : "right");
+      });
+    };
+
+    document.querySelectorAll(".hero-copy, .education-heading, .content-page > .page-heading, .works-heading > .page-heading")
+      .forEach((element) => addReveal(element, "left"));
+    document.querySelectorAll(".hero-image-frame, .profile-photo-column, .works-controls")
+      .forEach((element) => addReveal(element, "right"));
+    revealInAlternatingDirections(".home-skill-card, .education-card, .profile-item");
+    revealInAlternatingDirections(".work-card, .works-empty-state");
+
+    const worksGrid = document.getElementById("works-grid");
+    if (worksGrid) {
+      const worksObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            if (node.matches(".work-card, .works-empty-state")) {
+              const index = Array.from(worksGrid.children).indexOf(node);
+              addReveal(node, index % 2 === 0 ? "left" : "right");
+            }
+          });
+        });
+      });
+      worksObserver.observe(worksGrid, { childList: true });
+    }
+
+    document.documentElement.classList.add("has-motion");
+  }
 
   const scrollProgress = document.createElement("div");
   scrollProgress.className = "scroll-progress";

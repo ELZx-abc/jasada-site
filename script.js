@@ -21,6 +21,7 @@
     const revealInAlternatingDirections = (selector) => {
       document.querySelectorAll(selector).forEach((element, index) => {
         addReveal(element, index % 2 === 0 ? "left" : "right");
+        element.style.setProperty("--reveal-delay", `${(index % 6) * 55}ms`);
       });
     };
 
@@ -28,7 +29,7 @@
       .forEach((element) => addReveal(element, "left"));
     document.querySelectorAll(".hero-image-frame, .profile-photo-column, .works-controls")
       .forEach((element) => addReveal(element, "right"));
-    revealInAlternatingDirections(".home-skill-card, .education-card, .profile-item");
+    revealInAlternatingDirections(".home-skill-card, .education-card, .profile-item, .activity-photo");
     revealInAlternatingDirections(".work-card, .works-empty-state");
 
     const worksGrid = document.getElementById("works-grid");
@@ -91,6 +92,54 @@
     }, { passive: true });
   }
 
+  const activityImageDialog = document.getElementById("activity-image-dialog");
+  const activityDialogImage = document.getElementById("activity-dialog-image");
+  const activityDialogCaption = document.getElementById("activity-dialog-caption");
+  const activityImageClose = document.getElementById("activity-image-close");
+
+  if (
+    activityImageDialog instanceof HTMLDialogElement
+    && activityDialogImage instanceof HTMLImageElement
+    && activityDialogCaption instanceof HTMLElement
+  ) {
+    const openActivityImage = (photo) => {
+      const image = photo.querySelector("img");
+      if (!image) return;
+
+      activityDialogImage.src = image.currentSrc || image.src;
+      activityDialogImage.alt = image.alt;
+      activityDialogCaption.textContent = photo.querySelector("figcaption")?.textContent ?? image.alt;
+      activityImageDialog.showModal();
+      activityImageClose?.focus();
+    };
+
+    document.querySelectorAll(".activity-photo").forEach((photo) => {
+      const image = photo.querySelector("img");
+      if (!(image instanceof HTMLImageElement)) return;
+
+      photo.setAttribute("role", "button");
+      photo.setAttribute("aria-label", `ดูรูปขนาดใหญ่: ${image.alt}`);
+      photo.addEventListener("click", () => openActivityImage(photo));
+      photo.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        openActivityImage(photo);
+      });
+    });
+
+    activityImageClose?.addEventListener("click", () => activityImageDialog.close());
+    activityImageDialog.addEventListener("click", (event) => {
+      if (event.target === activityImageDialog) activityImageDialog.close();
+    });
+    activityImageDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      activityImageDialog.close();
+    });
+    activityImageDialog.addEventListener("close", () => {
+      activityDialogImage.removeAttribute("src");
+    });
+  }
+
   document.addEventListener("copy", (event) => {
     const target = event.target;
     const isEditable = target instanceof HTMLElement
@@ -128,6 +177,13 @@
       nav.style.setProperty("--nav-indicator-x", `${link.offsetLeft}px`);
       nav.style.setProperty("--nav-indicator-width", `${link.offsetWidth}px`);
     };
+    const restoreIndicator = () => {
+      const focusedLink = nav.querySelector(".nav-link:focus-visible");
+      const hoveredLink = window.matchMedia("(hover: hover) and (pointer: fine)").matches
+        ? nav.querySelector(".nav-link:hover")
+        : null;
+      positionIndicator(focusedLink || hoveredLink || activeNavLink);
+    };
 
     positionIndicator(previousNavLink);
     nav.classList.add("has-active-indicator");
@@ -138,7 +194,17 @@
       positionIndicator(activeNavLink);
     }
 
-    document.fonts.ready.then(() => positionIndicator(activeNavLink));
+    document.fonts.ready.then(restoreIndicator);
+
+    navLinks.forEach((link) => {
+      link.addEventListener("pointerenter", () => positionIndicator(link));
+      link.addEventListener("focus", () => positionIndicator(link));
+    });
+    nav.addEventListener("pointerleave", restoreIndicator);
+    nav.addEventListener("focusout", (event) => {
+      if (event.relatedTarget instanceof Node && nav.contains(event.relatedTarget)) return;
+      restoreIndicator();
+    });
 
     navLinks.forEach((link) => {
       link.addEventListener("click", () => {
@@ -146,7 +212,7 @@
       });
     });
 
-    window.addEventListener("resize", () => positionIndicator(activeNavLink));
+    window.addEventListener("resize", restoreIndicator);
   }
 
   const IMAGE_BUCKET = "work-images";

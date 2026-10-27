@@ -103,27 +103,6 @@
     window.addEventListener("resize", () => positionIndicator(activeNavLink));
   }
 
-  const revealTargets = document.querySelectorAll(
-    ".education-heading, .education-item, .home-skill-card, .page-heading, .profile-photo-column, .profile-item, .works-controls, .works-grid"
-  );
-
-  if (revealTargets.length && "IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.documentElement.classList.add("has-scroll-reveal");
-
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -32px 0px" });
-
-    revealTargets.forEach((target) => {
-      target.classList.add("scroll-reveal");
-      revealObserver.observe(target);
-    });
-  }
-
   const IMAGE_BUCKET = "work-images";
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
   const SUPPORTED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);

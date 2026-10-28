@@ -1646,10 +1646,11 @@ body::after {
   border: 1px solid rgba(130, 191, 232, .2);
   border-radius: 14px;
   background: rgba(6, 22, 37, .7);
+  /* flex-grow คือตัวควบคุมขนาดกรอบทั้งใบ — ให้ transition นี้ smooth ที่สุด */
   transition:
-    flex-grow .9s cubic-bezier(.16, 1, .3, 1),
-    border-color .6s ease,
-    box-shadow .6s ease;
+    flex-grow 1.1s cubic-bezier(.16, 1, .3, 1),
+    border-color .7s ease,
+    box-shadow .7s ease;
 }
 .activity-photo img {
   width: 100%;
@@ -1657,10 +1658,8 @@ body::after {
   display: block;
   object-fit: cover;
   object-position: center;
-  transition:
-    transform .9s cubic-bezier(.16, 1, .3, 1),
-    filter .7s ease;
-  will-change: transform;
+  /* ไม่ scale รูปข้างใน — ให้กรอบขยายเองเป็นตัวนำ */
+  transition: filter .8s ease;
 }
 /* Overlay ทับรูปที่ไม่ได้ชี้ */
 .activity-photo::after {
@@ -1670,24 +1669,23 @@ body::after {
   background: rgba(0, 0, 0, 0);
   content: "";
   pointer-events: none;
-  transition: background .7s ease;
+  transition: background .8s ease;
 }
-/* เมื่อ gallery ถูก hover → รูปอื่นมืดลง + zoom ออกเล็กน้อย */
+/* เมื่อ gallery ถูก hover → รูปอื่นมืดลง */
 .activity-gallery:hover .activity-photo:not(:hover)::after,
 .activity-gallery:focus-within .activity-photo:not(:focus)::after {
   background: rgba(0, 0, 0, .52);
 }
 .activity-gallery:hover .activity-photo:not(:hover) img,
 .activity-gallery:focus-within .activity-photo:not(:focus) img {
-  transform: scale(0.96);
-  filter: brightness(.68) saturate(.6);
+  filter: brightness(.65) saturate(.55);
 }
 /* รูปที่ shrink เมื่อมี hover อื่น */
 .activity-gallery:hover .activity-photo,
 .activity-gallery:focus-within .activity-photo {
   flex-grow: .68;
 }
-/* รูปที่ถูก hover → ขยายออก + zoom เข้า + กรอบเรืองแสง */
+/* รูปที่ถูก hover → กรอบขยายออกพร้อมกรอบเรืองแสง */
 .activity-gallery .activity-photo:hover,
 .activity-gallery .activity-photo:focus {
   z-index: 2;
@@ -1697,8 +1695,7 @@ body::after {
 }
 .activity-gallery .activity-photo:hover img,
 .activity-gallery .activity-photo:focus img {
-  transform: scale(1.07);
-  filter: brightness(1.05) saturate(1.08);
+  filter: brightness(1.04) saturate(1.08);
 }
 /* Figcaption เลื่อนขึ้นมาอย่างสมูท */
 .activity-photo figcaption {
@@ -1713,7 +1710,7 @@ body::after {
   font-size: 13px;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity .55s ease .18s, transform .65s cubic-bezier(.16, 1, .3, 1) .1s;
+  transition: opacity .6s ease .2s, transform .7s cubic-bezier(.16, 1, .3, 1) .12s;
 }
 .activity-photo:hover figcaption,
 .activity-photo:focus figcaption {

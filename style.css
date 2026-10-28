@@ -1636,14 +1636,90 @@ body::after {
 .activity-heading .eyebrow { margin-bottom: 2px; color: #74caff; }
 .activity-heading h3 { margin: 0; color: #e9f6ff; font-size: 22px; }
 .activity-gallery { display: flex; gap: 9px; overflow: hidden; }
-.activity-photo { position: relative; flex: 1 1 0; min-width: 0; height: clamp(210px, 27vw, 300px); margin: 0; overflow: hidden; border: 1px solid rgba(130, 191, 232, .2); border-radius: 14px; background: rgba(6, 22, 37, .7); transition: flex-grow .45s cubic-bezier(.2, .8, .2, 1), border-color .25s ease; }
-.activity-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
-.activity-photo::after { position: absolute; inset: 0; z-index: 1; background: rgba(0, 0, 0, .38); content: ""; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
-.activity-gallery:hover .activity-photo:not(:hover)::after, .activity-gallery:focus-within .activity-photo:not(:focus)::after { opacity: 1; }
-.activity-gallery:hover .activity-photo, .activity-gallery:focus-within .activity-photo { flex-grow: .72; }
-.activity-gallery .activity-photo:hover, .activity-gallery .activity-photo:focus { z-index: 2; flex-grow: 4.5; border-color: rgba(119, 205, 255, .72); }
-.activity-photo figcaption { position: absolute; right: 0; bottom: 0; left: 0; z-index: 2; padding: 36px 13px 13px; color: #f0f8ff; background: linear-gradient(transparent, rgba(3, 14, 24, .88)); font-size: 13px; opacity: 0; transition: opacity .25s ease .12s; }
-.activity-photo:hover figcaption, .activity-photo:focus figcaption { opacity: 1; }
+.activity-photo {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: clamp(210px, 27vw, 300px);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(130, 191, 232, .2);
+  border-radius: 14px;
+  background: rgba(6, 22, 37, .7);
+  transition:
+    flex-grow .55s cubic-bezier(.22, 1, .36, 1),
+    border-color .35s ease,
+    box-shadow .35s ease,
+    opacity .35s ease,
+    filter .35s ease;
+}
+.activity-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1), filter .35s ease;
+  will-change: transform;
+}
+/* Overlay ทับรูปที่ไม่ได้ชี้ */
+.activity-photo::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, .0);
+  content: "";
+  pointer-events: none;
+  transition: background .4s ease;
+}
+/* เมื่อ gallery ถูก hover → รูปอื่นมืดลง + zoom ออกเล็กน้อย */
+.activity-gallery:hover .activity-photo:not(:hover)::after,
+.activity-gallery:focus-within .activity-photo:not(:focus)::after {
+  background: rgba(0, 0, 0, .55);
+}
+.activity-gallery:hover .activity-photo:not(:hover) img,
+.activity-gallery:focus-within .activity-photo:not(:focus) img {
+  transform: scale(0.96);
+  filter: brightness(.72) saturate(.65);
+}
+/* รูปที่ shrink เมื่อมี hover อื่น */
+.activity-gallery:hover .activity-photo,
+.activity-gallery:focus-within .activity-photo {
+  flex-grow: .68;
+}
+/* รูปที่ถูก hover → ขยายออก + zoom เข้า + กรอบเรืองแสง */
+.activity-gallery .activity-photo:hover,
+.activity-gallery .activity-photo:focus {
+  z-index: 2;
+  flex-grow: 4.5;
+  border-color: rgba(119, 205, 255, .85);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, .5), 0 12px 32px rgba(0, 0, 0, .45);
+}
+.activity-gallery .activity-photo:hover img,
+.activity-gallery .activity-photo:focus img {
+  transform: scale(1.06);
+  filter: brightness(1.05) saturate(1.1);
+}
+/* Figcaption เลื่อนขึ้นมาอย่างสมูท */
+.activity-photo figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  padding: 40px 13px 13px;
+  color: #f0f8ff;
+  background: linear-gradient(transparent, rgba(3, 14, 24, .9));
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .3s ease .1s, transform .4s cubic-bezier(.22, 1, .36, 1) .05s;
+}
+.activity-photo:hover figcaption,
+.activity-photo:focus figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
 .activity-photo[role="button"] { cursor: zoom-in; }
 .activity-photo[role="button"]:focus-visible { outline: 2px solid #86d4ff; outline-offset: 3px; }
 .activity-image-dialog { position: fixed; width: min(1100px, calc(100% - 32px)); max-width: none; max-height: min(92vh, 900px); padding: 48px 20px 20px; overflow: auto; border: 1px solid rgba(119, 205, 255, .4); border-radius: 20px; color: #e9f6ff; background: linear-gradient(145deg, #10243a, #081827); box-shadow: 0 30px 100px rgba(0, 0, 0, .65), 0 0 40px rgba(42, 141, 211, .16); }
@@ -1674,7 +1750,14 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .activity-photo, .activity-photo::after, .activity-photo figcaption { transition: none; }
+  .activity-photo,
+  .activity-photo img,
+  .activity-photo::after,
+  .activity-photo figcaption {
+    transition: none;
+    transform: none !important;
+    filter: none !important;
+  }
 }
 
 /* Refined light-blue and white theme */
@@ -2581,17 +2664,7 @@ body.page-entering { animation: page-fade-in .38s ease both; }
 .address-chip-back .chip-val { font-size: 11px; line-height: 1.55; }
 
 .map-pin-icon { animation: map-pin-bounce 1.8s ease-in-out infinite; transform-origin: center bottom; }
-.activity-photo figcaption {
-  opacity: 0;
-  transform: translateY(12px);
-  backdrop-filter: blur(2px);
-  transition: opacity .34s ease, transform .42s cubic-bezier(.2, .8, .2, 1), backdrop-filter .34s ease;
-}
-.activity-photo:hover figcaption, .activity-photo:focus figcaption {
-  opacity: 1;
-  transform: translateY(0);
-  backdrop-filter: blur(7px);
-}
+/* figcaption animation handled in main activity block above */
 
 @media (hover: hover) and (pointer: fine) {
   .profile-photo-frame { transform-style: preserve-3d; }
@@ -2708,6 +2781,7 @@ body.page-entering { animation: page-fade-in .38s ease both; }
   }
   .map-pin-icon, .work-skeleton-image::after, .work-skeleton-line::after { animation: none; }
   .activity-photo figcaption { transform: none; backdrop-filter: none; transition: none; }
+  .activity-photo img { transition: none; transform: none !important; filter: none !important; }
 }
 
 @keyframes typing-caret { to { visibility: hidden; } }

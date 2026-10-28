@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=3">
+  <script src="script.js?v=3" defer></script>
 </head>
 <body>
   <div class="page-sparkles" aria-hidden="true">
@@ -53,7 +53,7 @@
         <dl class="profile-grid">
           <div class="profile-item"><dt>ชื่อ-นามสกุล</dt><dd>เจษฎา เกื้อสกุล</dd></div>
           <div class="profile-item"><dt>ชื่อเล่น</dt><dd>แบงค์</dd></div>
-          <div class="profile-item"><dt>อายุ</dt><dd>18 ปี</dd></div>
+          <div class="profile-item"><dt>อายุ</dt><dd><span class="age-counter" data-counter="18" aria-label="18">18</span> ปี</dd></div>
           <div class="profile-item"><dt>เบอร์โทรศัพท์</dt><dd><a class="profile-contact-link" href="tel:+66994963974">099-4963974</a></dd></div>
           <div class="profile-item"><dt>อีเมล</dt><dd><a class="profile-contact-link" href="mailto:jasadakulsakul@gmail.com">jasadakulsakul@gmail.com</a></dd></div>
           <div class="profile-item"><dt>สถานศึกษา</dt><dd>วิทยาลัยเทคนิคนครศรีธรรมราช</dd></div>
@@ -87,7 +87,143 @@
             </dd>
           </div>
           <div class="profile-item"><dt><svg class="ui-icon profile-goal-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v3"></path><path d="M12 18v3"></path><path d="M3 12h3"></path><path d="M18 12h3"></path><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="3"></circle><path d="m12 12 5-5"></path></svg>เป้าหมาย</dt><dd>เป้าหมายของผมคือการพัฒนาทักษะด้านกราฟิกดีไซน์ให้ดียิ่งขึ้น</dd></div>
+          <div class="profile-item profile-item-wide">
+            <dt><svg class="ui-icon profile-address-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>ที่อยู่บ้าน</dt>
+            <dd>206/1 หมู่4 ตำบล หินตก อำเภอ ร่อนพิบูลย์ จังหวัด นครศรีธรรมราช รหัสไปรษณีย์ 83500 <a class="profile-contact-link address-jump-link" href="#address-heading">(ดูแผนที่ปักหมุด ↗)</a></dd>
+          </div>
         </dl>
+      </div>
+    </section>
+
+    <!-- ส่วนหัวข้อที่อยู่บ้าน และ แผนที่แบบเลื่อนดูได้ -->
+    <section class="profile-address-section" aria-labelledby="address-heading">
+      <div class="address-card">
+        <div class="address-header">
+          <div class="address-header-text">
+            <p class="eyebrow">พิกัดและที่พักอาศัย</p>
+            <h2 id="address-heading" class="address-heading">
+              <svg class="ui-icon address-heading-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              ที่อยู่บ้าน
+            </h2>
+            <p class="address-subheading">ที่อยู่ปัจจุบันตามที่ระบุ พร้อมปักหมุดพิกัดบนแผนที่แบบโต้ตอบเลื่อนดูได้</p>
+          </div>
+          <div class="address-actions">
+            <button type="button" class="button button-light address-copy-btn" id="copy-address-btn" aria-label="คัดลอกข้อความที่อยู่">
+              <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>คัดลอกที่อยู่</span>
+            </button>
+            <a class="button button-light address-action-btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=8.231907,99.874652" target="_blank" rel="noopener noreferrer" aria-label="ขอเส้นทางนำทางไปยังหมุดที่อยู่บ้าน">
+              <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+              <span>นำทาง</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="button button-dark address-map-link" href="https://www.google.com/maps?q=8.231907,99.874652+(%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%B9%E0%B9%88%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99%20206%2F1%20%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B9%884%20%E0%B8%95.%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%95%E0%B8%81)" target="_blank" rel="noopener noreferrer" aria-label="เปิดดูจุดปักหมุดบน Google Maps ในแท็บใหม่">
+              <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                <line x1="9" y1="3" x2="9" y2="18"></line>
+                <line x1="15" y1="6" x2="15" y2="21"></line>
+              </svg>
+              <span>เปิดใน Google Maps</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="address-content-grid">
+          <div class="address-info-card">
+            <div class="address-highlight-item">
+              <span class="address-pin-icon-wrap" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </span>
+              <div class="address-highlight-text">
+                <span class="address-badge-label">ที่อยู่บ้าน (ปักหมุดแล้ว)</span>
+                <p class="address-primary-text">206/1 หมู่4 ตำบล หินตก อำเภอ ร่อนพิบูลย์ จังหวัด นครศรีธรรมราช รหัสไปรษณีย์ 83500</p>
+              </div>
+            </div>
+
+            <div class="address-components-grid">
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="บ้านเลขที่ / หมู่: 206/1 หมู่ 4. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">บ้านเลขที่ / หมู่</span><span class="chip-val">206/1 หมู่ 4</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="ตำบล: หินตก. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">ตำบล</span><span class="chip-val">หินตก</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="อำเภอ: ร่อนพิบูลย์. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">อำเภอ</span><span class="chip-val">ร่อนพิบูลย์</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="จังหวัด: นครศรีธรรมราช. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">จังหวัด</span><span class="chip-val">นครศรีธรรมราช</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="รหัสไปรษณีย์: 83500. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">รหัสไปรษณีย์</span><span class="chip-val">83500</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+              <button type="button" class="address-chip" aria-pressed="false" aria-label="พิกัดหมุดปัก GPS: 8.231907, 99.874652. คลิกเพื่อพลิกการ์ด">
+                <span class="address-chip-inner">
+                  <span class="address-chip-face address-chip-front"><span class="chip-key">พิกัดหมุดปัก (GPS)</span><span class="chip-val">8.231907, 99.874652</span></span>
+                  <span class="address-chip-face address-chip-back" aria-hidden="true"><span class="chip-key">ที่อยู่เต็ม</span><span class="chip-val">206/1 หมู่ 4 ต.หินตก อ.ร่อนพิบูลย์ จ.นครศรีธรรมราช 83500</span></span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div class="address-map-card">
+            <div class="address-map-header">
+              <span class="map-status-pill">
+                <span class="map-live-dot" aria-hidden="true"></span>
+                <strong>ปักหมุดแล้ว</strong>: 206/1 หมู่ 4 ต.หินตก
+              </span>
+              <div class="map-mode-toggle" role="group" aria-label="สลับรูปแบบแผนที่">
+                <button type="button" class="map-mode-btn is-active" id="map-mode-road" aria-pressed="true">🗺️ แผนที่</button>
+                <button type="button" class="map-mode-btn" id="map-mode-sat" aria-pressed="false">🛰️ ดาวเทียม</button>
+              </div>
+            </div>
+            <div class="address-map-frame-wrapper">
+              <iframe
+                id="address-map-iframe"
+                class="address-map-iframe"
+                src="https://maps.google.com/maps?q=8.231907,99.874652+(%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%B9%E0%B9%88%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99%20206%2F1%20%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B9%884%20%E0%B8%95.%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%95%E0%B8%81)&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                width="100%"
+                height="390"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                title="ปักหมุดที่อยู่บ้าน 206/1 หมู่4 ตำบล หินตก อำเภอ ร่อนพิบูลย์ จังหวัด นครศรีธรรมราช">
+              </iframe>
+              <div class="map-pin-badge-overlay" aria-label="ข้อมูลหมุดปัก">
+                <span class="map-pin-pulse" aria-hidden="true"></span>
+                <span class="map-pin-icon" aria-hidden="true">📍</span>
+                <div class="map-pin-text">
+                  <span class="map-pin-title">ปักหมุดที่อยู่บ้าน</span>
+                  <span class="map-pin-sub">206/1 หมู่ 4 ต.หินตก (8.2319, 99.8746)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>

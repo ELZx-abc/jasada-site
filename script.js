@@ -2,6 +2,141 @@
 
 (() => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const themeStorageKey = "jasada_site_theme";
+  const savedTheme = localStorage.getItem(themeStorageKey);
+  document.documentElement.dataset.theme = savedTheme === "dark" ? "dark" : "light";
+
+  const nav = document.querySelector(".site-nav");
+  if (nav) {
+    const themeToggle = document.createElement("button");
+    themeToggle.className = "theme-toggle";
+    themeToggle.type = "button";
+    themeToggle.innerHTML = '<span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true">☀️</span><span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true">🌙</span>';
+
+    const updateThemeToggle = () => {
+      const isDark = document.documentElement.dataset.theme === "dark";
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+      themeToggle.setAttribute("aria-label", isDark ? "เปลี่ยนเป็นธีมสว่าง" : "เปลี่ยนเป็นธีมมืด");
+      themeToggle.title = isDark ? "เปลี่ยนเป็นธีมสว่าง" : "เปลี่ยนเป็นธีมมืด";
+    };
+
+    updateThemeToggle();
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem(themeStorageKey, nextTheme);
+      updateThemeToggle();
+    });
+    nav.append(themeToggle);
+  }
+
+  if (!reducedMotion) {
+    document.body.classList.add("page-entering");
+    window.setTimeout(() => document.body.classList.remove("page-entering"), 400);
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest("a");
+      if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download")) return;
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (link.target && link.target !== "_self") return;
+
+      const destination = new URL(link.href, window.location.href);
+      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return;
+
+      event.preventDefault();
+      document.body.classList.add("page-exiting");
+      window.setTimeout(() => window.location.assign(destination.href), 180);
+    });
+  }
+
+  const scrollToTopButton = document.createElement("button");
+  scrollToTopButton.className = "scroll-to-top";
+  scrollToTopButton.type = "button";
+  scrollToTopButton.setAttribute("aria-label", "กลับขึ้นไปด้านบน");
+  scrollToTopButton.setAttribute("aria-hidden", "true");
+  scrollToTopButton.disabled = true;
+  scrollToTopButton.innerHTML = '<span aria-hidden="true">↑</span>';
+  document.body.append(scrollToTopButton);
+
+  let scrollToTopFrame = 0;
+  const updateScrollToTop = () => {
+    if (scrollToTopFrame) return;
+    scrollToTopFrame = requestAnimationFrame(() => {
+      const isVisible = window.scrollY > 420;
+      scrollToTopButton.classList.toggle("is-visible", isVisible);
+      scrollToTopButton.setAttribute("aria-hidden", String(!isVisible));
+      scrollToTopButton.disabled = !isVisible;
+      scrollToTopFrame = 0;
+    });
+  };
+  window.addEventListener("scroll", updateScrollToTop, { passive: true });
+  updateScrollToTop();
+  scrollToTopButton.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+  });
+
+  const typingText = document.querySelector(".typing-text[data-typing-text]");
+  if (typingText instanceof HTMLElement) {
+    const fullText = typingText.dataset.typingText;
+    if (reducedMotion || !fullText) {
+      typingText.textContent = fullText || "";
+      typingText.classList.add("typing-complete");
+    } else {
+      const characters = "Segmenter" in Intl
+        ? Array.from(new Intl.Segmenter("th", { granularity: "grapheme" }).segment(fullText), (part) => part.segment)
+        : Array.from(fullText);
+      let characterIndex = 0;
+      typingText.textContent = "";
+      const typingInterval = window.setInterval(() => {
+        typingText.textContent += characters[characterIndex];
+        characterIndex += 1;
+        if (characterIndex >= characters.length) {
+          window.clearInterval(typingInterval);
+          typingText.classList.add("typing-complete");
+        }
+      }, 95);
+    }
+  }
+
+  const ageCounters = document.querySelectorAll(".age-counter[data-counter]");
+  if (reducedMotion || !("IntersectionObserver" in window)) {
+    ageCounters.forEach((counter) => {
+      counter.textContent = counter.dataset.counter || "0";
+    });
+  } else {
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const counter = entry.target;
+        const target = Number(counter.dataset.counter);
+        if (!Number.isFinite(target) || target < 0) {
+          observer.unobserve(counter);
+          return;
+        }
+
+        const duration = 900;
+        const startTime = performance.now();
+        counter.textContent = "0";
+        const updateCounter = (currentTime) => {
+          const progress = Math.min(1, (currentTime - startTime) / duration);
+          counter.textContent = String(Math.round(target * (1 - (1 - progress) ** 3)));
+          if (progress < 1) requestAnimationFrame(updateCounter);
+        };
+        requestAnimationFrame(updateCounter);
+        observer.unobserve(counter);
+      });
+    }, { threshold: 0.2 });
+    ageCounters.forEach((counter) => counterObserver.observe(counter));
+  }
+
+  document.querySelectorAll(".address-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const isFlipped = chip.classList.toggle("is-flipped");
+      chip.setAttribute("aria-pressed", String(isFlipped));
+      chip.querySelector(".address-chip-front")?.setAttribute("aria-hidden", String(isFlipped));
+      chip.querySelector(".address-chip-back")?.setAttribute("aria-hidden", String(!isFlipped));
+    });
+  });
 
   if (!reducedMotion && "IntersectionObserver" in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -22,15 +157,35 @@
       document.querySelectorAll(selector).forEach((element, index) => {
         addReveal(element, index % 2 === 0 ? "left" : "right");
         element.style.setProperty("--reveal-delay", `${(index % 6) * 55}ms`);
+        if (element.matches(".home-skill-card")) {
+          element.querySelectorAll(".profile-tags li").forEach((tag, tagIndex) => {
+            tag.style.setProperty("--skill-delay", `${tagIndex * 75}ms`);
+          });
+        }
       });
     };
 
-    document.querySelectorAll(".hero-copy, .education-heading, .content-page > .page-heading, .works-heading > .page-heading")
+    document.querySelectorAll(".hero-copy, .education-heading, .content-page > .page-heading, .works-heading > .page-heading, .profile-address-section, .address-info-card")
       .forEach((element) => addReveal(element, "left"));
-    document.querySelectorAll(".hero-image-frame, .profile-photo-column, .works-controls")
+    document.querySelectorAll(".hero-image-frame, .profile-photo-column, .works-controls, .address-map-card")
       .forEach((element) => addReveal(element, "right"));
-    revealInAlternatingDirections(".home-skill-card, .education-card, .profile-item, .activity-photo");
+    revealInAlternatingDirections(".home-skill-card, .profile-item, .activity-photo");
     revealInAlternatingDirections(".work-card, .works-empty-state");
+
+    const educationTimeline = document.querySelector(".education-timeline");
+    if (educationTimeline) {
+      educationTimeline.querySelectorAll(".education-item").forEach((item, index) => {
+        item.style.setProperty("--timeline-delay", `${index * 180}ms`);
+      });
+      const timelineObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.2 });
+      timelineObserver.observe(educationTimeline);
+    }
 
     const worksGrid = document.getElementById("works-grid");
     if (worksGrid) {
@@ -41,6 +196,14 @@
             if (node.matches(".work-card, .works-empty-state")) {
               const index = Array.from(worksGrid.children).indexOf(node);
               addReveal(node, index % 2 === 0 ? "left" : "right");
+              if (node.matches(".work-card")) {
+                node.classList.add("has-spotlight");
+                node.addEventListener("pointermove", (event) => {
+                  const bounds = node.getBoundingClientRect();
+                  node.style.setProperty("--card-px", `${event.clientX - bounds.left}px`);
+                  node.style.setProperty("--card-py", `${event.clientY - bounds.top}px`);
+                });
+              }
             }
           });
         });
@@ -71,7 +234,7 @@
   updateScrollProgress();
 
   if (!reducedMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-    const tiltTargets = document.querySelectorAll(".hero-image-frame, .home-skill-card, .education-card, .work-card");
+    const tiltTargets = document.querySelectorAll(".hero-image-frame, .home-skill-card, .education-card, .work-card, .profile-photo-frame");
     tiltTargets.forEach((target) => {
       target.addEventListener("pointermove", (event) => {
         const bounds = target.getBoundingClientRect();
@@ -83,6 +246,18 @@
       target.addEventListener("pointerleave", () => {
         target.style.setProperty("--tilt-x", "0deg");
         target.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+
+    const spotlightCards = document.querySelectorAll(
+      ".home-skill-card, .education-card, .work-card, .profile-item, .address-info-card, .address-map-card, .activity-card"
+    );
+    spotlightCards.forEach((card) => {
+      card.classList.add("has-spotlight");
+      card.addEventListener("pointermove", (event) => {
+        const bounds = card.getBoundingClientRect();
+        card.style.setProperty("--card-px", `${event.clientX - bounds.left}px`);
+        card.style.setProperty("--card-py", `${event.clientY - bounds.top}px`);
       });
     });
 
@@ -143,7 +318,7 @@
   document.addEventListener("copy", (event) => {
     const target = event.target;
     const isEditable = target instanceof HTMLElement
-      && (target.isContentEditable || target.matches("input, textarea"));
+      && (target.isContentEditable || target.matches("input, textarea") || Boolean(target.closest(".profile-address-section, .profile-item")));
     if (!isEditable) event.preventDefault();
   });
 
@@ -155,7 +330,6 @@
     if (event.target instanceof HTMLImageElement) event.preventDefault();
   });
 
-  const nav = document.querySelector(".site-nav");
   const navLinks = nav ? Array.from(nav.querySelectorAll(".nav-link")) : [];
   const activeNavLink = navLinks.find((link) => link.classList.contains("is-active"));
   const previousNavIndexKey = "jasada_site_previous_nav_index";
@@ -215,6 +389,60 @@
     window.addEventListener("resize", restoreIndicator);
   }
 
+  const copyAddressBtn = document.getElementById("copy-address-btn");
+  if (copyAddressBtn) {
+    copyAddressBtn.addEventListener("click", async () => {
+      const addressText = "206/1 หมู่4 ตำบล หินตก อำเภอ ร่อนพิบูลย์ จังหวัด นครศรีธรรมราช รหัสไปรษณีย์ 83500";
+      const span = copyAddressBtn.querySelector("span");
+      const originalText = span ? span.textContent : "คัดลอกที่อยู่";
+      try {
+        await navigator.clipboard.writeText(addressText);
+      } catch (err) {
+        const textarea = document.createElement("textarea");
+        textarea.value = addressText;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand("copy");
+        } catch (_) {}
+        textarea.remove();
+      }
+      if (span) span.textContent = "คัดลอกที่อยู่แล้ว! ✓";
+      copyAddressBtn.classList.add("is-copied");
+      setTimeout(() => {
+        if (span) span.textContent = originalText;
+        copyAddressBtn.classList.remove("is-copied");
+      }, 2000);
+    });
+  }
+
+  const mapIframe = document.getElementById("address-map-iframe");
+  const mapModeRoad = document.getElementById("map-mode-road");
+  const mapModeSat = document.getElementById("map-mode-sat");
+
+  if (mapIframe && mapModeRoad && mapModeSat) {
+    const basePinUrl = "https://maps.google.com/maps?q=8.231907,99.874652+(%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%B9%E0%B9%88%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99%20206%2F1%20%E0%B8%AB%E0%B8%A1%E0%B8%B9%E0%B9%884%20%E0%B8%95.%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%95%E0%B8%81)&z=16&ie=UTF8&iwloc=B&output=embed";
+
+    mapModeRoad.addEventListener("click", () => {
+      mapIframe.src = basePinUrl + "&t=m";
+      mapModeRoad.classList.add("is-active");
+      mapModeRoad.setAttribute("aria-pressed", "true");
+      mapModeSat.classList.remove("is-active");
+      mapModeSat.setAttribute("aria-pressed", "false");
+    });
+
+    mapModeSat.addEventListener("click", () => {
+      mapIframe.src = basePinUrl + "&t=h";
+      mapModeSat.classList.add("is-active");
+      mapModeSat.setAttribute("aria-pressed", "true");
+      mapModeRoad.classList.remove("is-active");
+      mapModeRoad.setAttribute("aria-pressed", "false");
+    });
+  }
+
   const IMAGE_BUCKET = "work-images";
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
   const SUPPORTED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
@@ -251,6 +479,7 @@
 
   let client;
   let works = [];
+  let isLoadingWorks = true;
 
   function makeElement(tag, className, text) {
     const element = document.createElement(tag);
@@ -294,6 +523,24 @@
 
   async function renderWorks() {
     grid.replaceChildren();
+    grid.setAttribute("aria-busy", String(isLoadingWorks));
+
+    if (isLoadingWorks) {
+      for (let index = 0; index < 6; index += 1) {
+        const skeleton = makeElement("article", "work-skeleton");
+        skeleton.setAttribute("aria-hidden", "true");
+        skeleton.append(makeElement("span", "work-skeleton-image"));
+        const skeletonBody = makeElement("div", "work-skeleton-body");
+        skeletonBody.append(
+          makeElement("span", "work-skeleton-line work-skeleton-title"),
+          makeElement("span", "work-skeleton-line"),
+          makeElement("span", "work-skeleton-line work-skeleton-short")
+        );
+        skeleton.append(skeletonBody);
+        grid.append(skeleton);
+      }
+      return;
+    }
 
     if (works.length === 0) {
       const emptyState = makeElement("div", "works-empty-state");
@@ -343,7 +590,16 @@
         editButton.addEventListener("click", () => showEditDialog(work));
         const deleteButton = makeElement("button", "small-button", "ลบ");
         deleteButton.type = "button";
-        deleteButton.addEventListener("click", () => removeWork(work));
+        deleteButton.addEventListener("click", async () => {
+          deleteButton.disabled = true;
+          card.classList.add("delete-confirm-shake");
+          if (!reducedMotion) {
+            await new Promise((resolve) => window.setTimeout(resolve, 320));
+          }
+          card.classList.remove("delete-confirm-shake");
+          deleteButton.disabled = false;
+          await removeWork(work);
+        });
         actions.append(editButton, deleteButton);
         card.append(actions);
       }
@@ -376,13 +632,19 @@
 
   async function loadWorks() {
     status.textContent = "";
-    const { data, error } = await client
-      .from("works")
-      .select("id, title, description, work_date, image_path, created_at")
-      .order("created_at", { ascending: false });
-    if (error) throw error;
-    works = data || [];
+    isLoadingWorks = true;
     await renderWorks();
+    try {
+      const { data, error } = await client
+        .from("works")
+        .select("id, title, description, work_date, image_path, created_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      works = data || [];
+    } finally {
+      isLoadingWorks = false;
+      await renderWorks();
+    }
   }
 
   function resetWorkForm() {
@@ -600,6 +862,7 @@
 
     if (!window.supabase) {
       status.textContent = "โหลดไลบรารี Supabase ไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
+      isLoadingWorks = false;
       await renderWorks();
       return;
     }
@@ -611,6 +874,7 @@
       window.SUPABASE_ANON_KEY.startsWith("sb_publishable_ใส่คีย์ของคุณ")
     ) {
       status.textContent = "ยังไม่ได้ตั้งค่า Supabase กรุณากรอก Project URL และ key ใน supabase-config.js";
+      isLoadingWorks = false;
       await renderWorks();
       return;
     }
@@ -622,4 +886,19 @@
   initialize().catch((error) => {
     status.textContent = `โหลดผลงานไม่สำเร็จ: ${error.message}`;
   });
+  // Interactive Click Ripple Effect
+  document.addEventListener("click", (e) => {
+    const target = e.target.closest(".button, .small-button, .theme-toggle, .nav-link, .address-copy-btn");
+    if (!target) return;
+    const ripple = document.createElement("span");
+    ripple.className = "click-ripple";
+    const rect = target.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2.2;
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+    target.appendChild(ripple);
+    window.setTimeout(() => ripple.remove(), 600);
+  });
+
 })();

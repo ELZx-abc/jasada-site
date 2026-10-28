@@ -165,11 +165,11 @@
       });
     };
 
-    document.querySelectorAll(".hero-copy, .education-heading, .content-page > .page-heading, .works-heading > .page-heading, .profile-address-section, .address-info-card")
+    document.querySelectorAll(".hero-copy, .education-heading, .activity-header, .content-page > .page-heading, .works-heading > .page-heading, .profile-address-section, .address-info-card")
       .forEach((element) => addReveal(element, "left"));
     document.querySelectorAll(".hero-image-frame, .profile-photo-column, .works-controls, .address-map-card")
       .forEach((element) => addReveal(element, "right"));
-    revealInAlternatingDirections(".home-skill-card, .profile-item, .activity-photo");
+    revealInAlternatingDirections(".home-skill-card, .profile-item, .activity-card");
     revealInAlternatingDirections(".work-card, .works-empty-state");
 
     const educationTimeline = document.querySelector(".education-timeline");

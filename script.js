@@ -901,40 +901,4 @@
     window.setTimeout(() => ripple.remove(), 600);
   });
 
-  // MotionSites Creative Matter Splash Intro Screen Handler
-  const introSplash = document.getElementById("intro-splash");
-  const introEnterBtn = document.getElementById("intro-enter-btn");
-
-  if (introSplash && introEnterBtn) {
-    const isInternalNav = document.referrer && (document.referrer.includes("profile.html") || document.referrer.includes("works.html"));
-    const isIntroPassed = sessionStorage.getItem("jasada_intro_passed") === "true";
-    const urlParams = new URLSearchParams(window.location.search);
-    const forceIntro = urlParams.get("intro") === "1";
-
-    if (isIntroPassed && isInternalNav && !forceIntro) {
-      introSplash.remove();
-    } else {
-      document.body.classList.add("intro-locked");
-
-      const closeIntro = () => {
-        if (introSplash.classList.contains("is-exiting")) return;
-        introSplash.classList.add("is-exiting");
-        document.body.classList.remove("intro-locked");
-        sessionStorage.setItem("jasada_intro_passed", "true");
-        window.setTimeout(() => {
-          introSplash.remove();
-        }, 850);
-      };
-
-      introEnterBtn.addEventListener("click", closeIntro);
-
-      // Support Enter key press
-      window.addEventListener("keydown", (e) => {
-        if (!introSplash.classList.contains("is-exiting") && (e.key === "Enter" || e.key === " ")) {
-          closeIntro();
-        }
-      });
-    }
-  }
-
 })();

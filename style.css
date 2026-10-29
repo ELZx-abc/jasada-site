@@ -3196,10 +3196,13 @@ body.page-entering { animation: page-fade-in .38s ease both; }
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: min(320px, calc(100vw - 28px));
-  padding: 12px;
+  width: 200px;
+  max-height: min(540px, calc(100vh - 90px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(155, 213, 255, 0.45);
@@ -3212,6 +3215,21 @@ body.page-entering { animation: page-fade-in .38s ease both; }
               visibility 0.22s;
   z-index: 1000;
   pointer-events: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 213, 255, 0.5) transparent;
+}
+
+.nav-dropdown-menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.nav-dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(155, 213, 255, 0.5);
+  border-radius: 999px;
 }
 
 .nav-dropdown:hover .nav-dropdown-menu,
@@ -3288,18 +3306,18 @@ body.page-entering { animation: page-fade-in .38s ease both; }
 }
 
 .dropdown-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 7px;
-  border-radius: 7px;
-  font-size: 12px;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 500;
   color: #486581;
   background: rgba(240, 247, 254, 0.7);
@@ -3313,7 +3331,7 @@ body.page-entering { animation: page-fade-in .38s ease both; }
   background: rgba(85, 169, 229, 0.18);
   border-color: rgba(85, 169, 229, 0.6);
   color: #17324d;
-  transform: translateY(-1px);
+  transform: translateX(3px);
 }
 
 .dropdown-item.is-selected {
@@ -3547,13 +3565,14 @@ body.page-entering { animation: page-fade-in .38s ease both; }
 
 @media (max-width: 600px) {
   .nav-dropdown-menu {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%) translateY(-6px) scale(0.98);
+    right: 0;
+    left: auto;
+    width: min(210px, calc(100vw - 32px));
+    transform: translateY(-6px) scale(0.98);
   }
   .nav-dropdown:hover .nav-dropdown-menu,
   .nav-dropdown:focus-within .nav-dropdown-menu,
   .nav-dropdown.is-open .nav-dropdown-menu {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }

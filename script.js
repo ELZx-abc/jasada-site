@@ -539,8 +539,17 @@
       const num = Number(work.week);
       if (num >= 1 && num <= 15) return num;
     }
+    if (
+      work.id === "a1000000-0000-0000-0000-000000000001" ||
+      work.id === "b2000000-0000-0000-0000-000000000001" ||
+      work.id === "b2000000-0000-0000-0000-000000000002" ||
+      work.id === "b2000000-0000-0000-0000-000000000003" ||
+      (typeof work.image_path === "string" && work.image_path.includes("week2"))
+    ) {
+      return 2;
+    }
     if (typeof work.description === "string") {
-      const match = work.description.match(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]/i);
+      const match = work.description.match(/^\[(?:สัปดาห์ที่|สัปดาห์|Week)\s*(\d+)\]/i);
       if (match) {
         const num = Number(match[1]);
         if (num >= 1 && num <= 15) return num;
@@ -576,7 +585,7 @@
     {
       id: "b2000000-0000-0000-0000-000000000001",
       title: "ผังสรุปความรู้: การพัฒนาระบบสารสนเทศ (SDLC Mind Map)",
-      description: "สรุปสาระสำคัญการพัฒนาระบบสารสนเทศ ครอบคลุมความหมาย ประโยชน์ และ 7 ขั้นตอน SDLC",
+      description: "[สัปดาห์ที่ 2] สรุปสาระสำคัญการพัฒนาระบบสารสนเทศ ครอบคลุมความหมาย ประโยชน์ และ 7 ขั้นตอน SDLC",
       work_date: "2026-10-29",
       image_path: "imeges/week2/work-mindmap.png",
       week: 2
@@ -584,7 +593,7 @@
     {
       id: "b2000000-0000-0000-0000-000000000002",
       title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 1 (10 ข้อ)",
-      description: "แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 1 การพัฒนาระบบสารสนเทศ พร้อมเฉลย 10 ข้อ",
+      description: "[สัปดาห์ที่ 2] แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 1 การพัฒนาระบบสารสนเทศ พร้อมเฉลย 10 ข้อ",
       work_date: "2026-10-29",
       image_path: "imeges/week2/work-quiz.jpg",
       week: 2
@@ -592,7 +601,7 @@
     {
       id: "b2000000-0000-0000-0000-000000000003",
       title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 1",
-      description: "แบบฝึกหัดสรุปคำตอบ หน่วยการเรียนรู้ที่ 1 กระบวนการวิเคราะห์และขั้นตอนการดูแลรักษาระบบ",
+      description: "[สัปดาห์ที่ 2] แบบฝึกหัดสรุปคำตอบ หน่วยการเรียนรู้ที่ 1 กระบวนการวิเคราะห์และขั้นตอนการดูแลรักษาระบบ",
       work_date: "2026-10-29",
       image_path: "imeges/week2/work-exercise.jpg",
       week: 2
@@ -789,7 +798,7 @@
   function getCleanDescription(description) {
     if (!description) return "";
     return description
-      .replace(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]\s*/i, "")
+      .replace(/^\[(?:สัปดาห์ที่|สัปดาห์|Week)\s*(\d+)\]\s*/i, "")
       .replace(/\[slides:\s*[^\]]+\]\s*/i, "")
       .trim();
   }

@@ -494,6 +494,7 @@
   const workDetailDate = document.getElementById("work-detail-date");
   const workDetailWeek = document.getElementById("work-detail-week");
   const workDetailImageFrame = document.getElementById("work-detail-image-frame");
+  const workDetailSlidesFrame = document.getElementById("work-detail-slides-frame");
   const workDetailImage = document.getElementById("work-detail-image");
   const form = document.getElementById("work-form");
   const titleInput = document.getElementById("work-title");
@@ -548,9 +549,225 @@
     return null;
   }
 
+  const SEED_WORKS = [
+    {
+      id: "a1000000-0000-0000-0000-000000000001",
+      title: "The Creator's Playbook: ถอดรหัส SDLC",
+      description: "สไลด์นำเสนอสรุปเนื้อหาการวิเคราะห์และพัฒนาระบบ SDLC ฉบับคนสร้างระบบ ครอบคลุม 7 ขั้นตอนหลักและ Phase Impact Matrix [Module 01]",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/slide-1.jpg",
+      week: 2,
+      slides: [
+        "imeges/week2/slide-1.jpg",
+        "imeges/week2/slide-2.jpg",
+        "imeges/week2/slide-3.jpg",
+        "imeges/week2/slide-4.jpg",
+        "imeges/week2/slide-5.jpg"
+      ]
+    },
+    {
+      id: "a1000000-0000-0000-0000-000000000002",
+      title: "เอกสารคู่มือการพัฒนาระบบ: Hacking the SDLC",
+      description: "เอกสารและหลักการพัฒนาระบบสารสนเทศ เพื่อการวางแผนงบประมาณ การจัดการข้อมูล และการสร้างคุณค่าทางธุรกิจ",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/slide-2.jpg",
+      week: 2
+    },
+    {
+      id: "a1000000-0000-0000-0000-000000000003",
+      title: "แผนผัง The 7-Step Street Map และ Phase Impact Matrix",
+      description: "ผังกระบวนการ 7 ขั้นตอนการพัฒนาระบบ ตั้งแต่ปัญหาจนถึงการบำรุงรักษา พร้อมเมทริกซ์การจัดระเบียบบทบาทหน้าที่ของผู้เกี่ยวข้อง",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/slide-4.jpg",
+      week: 2
+    }
+  ];
+
+  function getWorkSlides(work) {
+    if (!work) return null;
+    if (Array.isArray(work.slides) && work.slides.length > 0) {
+      return work.slides;
+    }
+    if (work.id === "a1000000-0000-0000-0000-000000000001" || (work.title && work.title.includes("Creator's Playbook"))) {
+      return [
+        "imeges/week2/slide-1.jpg",
+        "imeges/week2/slide-2.jpg",
+        "imeges/week2/slide-3.jpg",
+        "imeges/week2/slide-4.jpg",
+        "imeges/week2/slide-5.jpg"
+      ];
+    }
+    if (typeof work.description === "string") {
+      const match = work.description.match(/\[slides:\s*([^\]]+)\]/i);
+      if (match) {
+        const val = match[1].trim();
+        if (/^\d+$/.test(val)) {
+          const count = parseInt(val, 10);
+          return Array.from({ length: count }, (_, i) => `imeges/week2/slide-${i + 1}.jpg`);
+        }
+        return val.split(",").map((s) => s.trim());
+      }
+    }
+    return null;
+  }
+
+  function buildSlideCarousel(slides, work, isModal = false, initialIndex = 0) {
+    const container = makeElement("div", isModal ? "slide-carousel-modal" : "slide-carousel-card");
+    let currentIndex = Math.max(0, Math.min(slides.length - 1, initialIndex));
+    const total = slides.length;
+
+    const viewport = makeElement("div", "slide-viewport");
+    const track = makeElement("div", "slide-track");
+
+    slides.forEach((src, idx) => {
+      const slide = makeElement("div", `slide-item ${idx === currentIndex ? "is-active" : ""}`);
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `${work.title} - สไลด์ที่ ${idx + 1} จาก ${total}`;
+      img.loading = idx === 0 ? "eager" : "lazy";
+      img.draggable = false;
+      slide.append(img);
+      track.append(slide);
+    });
+    viewport.append(track);
+
+    // Slide Counter Badge (1 / 5)
+    const counterBadge = makeElement("div", "slide-counter-badge");
+    const counterNum = makeElement("span", "slide-counter-num", String(currentIndex + 1));
+    counterBadge.append(counterNum, document.createTextNode(` / ${total}`));
+
+    // Left hover click zone (with arrow and hint)
+    const leftZone = makeElement("button", "slide-zone slide-zone-left");
+    leftZone.type = "button";
+    leftZone.setAttribute("aria-label", "สไลด์ก่อนหน้า");
+    const leftBtn = makeElement("span", "slide-zone-btn");
+    leftBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg>';
+    const leftHint = makeElement("span", "slide-zone-hint", "ก่อนหน้า");
+    leftZone.append(leftBtn, leftHint);
+
+    // Right hover click zone (with arrow and hint)
+    const rightZone = makeElement("button", "slide-zone slide-zone-right");
+    rightZone.type = "button";
+    rightZone.setAttribute("aria-label", "สไลด์ถัดไป");
+    const rightBtn = makeElement("span", "slide-zone-btn");
+    rightBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>';
+    const rightHint = makeElement("span", "slide-zone-hint", "ถัดไป");
+    rightZone.append(rightBtn, rightHint);
+
+    // Pagination Dots
+    const pagination = makeElement("div", "slide-pagination");
+    const dots = [];
+    slides.forEach((_, idx) => {
+      const dot = makeElement("button", `slide-dot ${idx === currentIndex ? "is-active" : ""}`);
+      dot.type = "button";
+      dot.setAttribute("aria-label", `ไปยังสไลด์ที่ ${idx + 1}`);
+      dot.addEventListener("click", (e) => {
+        e.stopPropagation();
+        goTo(idx);
+      });
+      dots.push(dot);
+      pagination.append(dot);
+    });
+
+    // Expand Button (only on card)
+    let expandBtn = null;
+    if (!isModal) {
+      expandBtn = makeElement("button", "slide-expand-btn");
+      expandBtn.type = "button";
+      expandBtn.setAttribute("aria-label", "เปิดดูสไลด์ขนาดใหญ่");
+      expandBtn.title = "ดูภาพขนาดใหญ่เต็มจอ";
+      expandBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg>';
+      expandBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showWorkDetails(work, currentIndex);
+      });
+    }
+
+    let onSlideChangeCallback = null;
+
+    function goTo(index) {
+      if (index < 0) index = total - 1;
+      else if (index >= total) index = 0;
+      currentIndex = index;
+
+      track.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
+      counterNum.textContent = String(currentIndex + 1);
+
+      track.querySelectorAll(".slide-item").forEach((item, idx) => {
+        item.classList.toggle("is-active", idx === currentIndex);
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle("is-active", idx === currentIndex);
+      });
+
+      if (typeof onSlideChangeCallback === "function") {
+        onSlideChangeCallback(currentIndex);
+      }
+    }
+
+    leftZone.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goTo(currentIndex - 1);
+    });
+
+    rightZone.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goTo(currentIndex + 1);
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchStartY = 0;
+    viewport.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    viewport.addEventListener("touchend", (e) => {
+      const diffX = e.changedTouches[0].clientX - touchStartX;
+      const diffY = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        if (diffX > 0) goTo(currentIndex - 1);
+        else goTo(currentIndex + 1);
+      }
+    }, { passive: true });
+
+    container.setAttribute("tabindex", "0");
+    container.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goTo(currentIndex - 1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goTo(currentIndex + 1);
+      }
+    });
+
+    container.append(viewport, leftZone, rightZone, counterBadge, pagination);
+    if (expandBtn) container.append(expandBtn);
+
+    // Initial position
+    if (currentIndex > 0) {
+      requestAnimationFrame(() => {
+        track.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
+      });
+    }
+
+    return {
+      container,
+      goTo,
+      getCurrentIndex: () => currentIndex,
+      setOnSlideChange: (cb) => { onSlideChangeCallback = cb; }
+    };
+  }
+
   function getCleanDescription(description) {
     if (!description) return "";
-    return description.replace(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]\s*/i, "").trim();
+    return description
+      .replace(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]\s*/i, "")
+      .replace(/\[slides:\s*[^\]]+\]\s*/i, "")
+      .trim();
   }
 
   function syncFilterUI() {
@@ -705,25 +922,24 @@
     }
 
     for (const work of filteredWorks) {
-      const card = makeElement("article", "work-card");
-      const imageFrame = makeElement("button", "work-image-frame");
-      imageFrame.type = "button";
-      imageFrame.setAttribute("aria-label", `รูปผลงาน: ${work.title}`);
-      imageFrame.addEventListener("click", () => showWorkDetails(work));
+      const slides = getWorkSlides(work);
+      const isSlideWork = Boolean(slides && slides.length > 1);
 
-      if (work.image_path) {
-        const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
-        const image = document.createElement("img");
-        image.src = data.publicUrl;
-        image.alt = `รูปผลงาน: ${work.title}`;
-        imageFrame.append(image);
-      }
-
+      const card = makeElement("article", isSlideWork ? "work-card work-card-slide" : "work-card");
       const body = makeElement("div", "work-card-body");
+
+      // Badges row
+      const badgesRow = makeElement("div", "work-card-badges");
       const weekNum = getWorkWeek(work);
       if (weekNum) {
-        body.append(makeElement("span", "work-week-badge", `สัปดาห์ที่ ${weekNum}`));
+        badgesRow.append(makeElement("span", "work-week-badge", `สัปดาห์ที่ ${weekNum}`));
       }
+      if (isSlideWork) {
+        const slideBadge = makeElement("span", "work-type-badge");
+        slideBadge.innerHTML = '<svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="m9 8 7 4-7 4V8z"></path></svg> สไลด์นำเสนอ (' + slides.length + ' หน้า)';
+        badgesRow.append(slideBadge);
+      }
+      body.append(badgesRow);
 
       const title = makeElement("h2", "work-card-title");
       const titleButton = makeElement("button", "work-card-title-button", work.title);
@@ -736,7 +952,29 @@
       const cleanDesc = getCleanDescription(work.description);
       if (cleanDesc) body.append(makeElement("p", "work-card-description", cleanDesc));
       if (work.work_date) body.append(makeElement("p", "work-card-date", formatDate(work.work_date)));
-      card.append(imageFrame, body);
+
+      if (isSlideWork) {
+        const carousel = buildSlideCarousel(slides, work, false);
+        card.append(carousel.container, body);
+      } else {
+        const imageFrame = makeElement("button", "work-image-frame");
+        imageFrame.type = "button";
+        imageFrame.setAttribute("aria-label", `รูปผลงาน: ${work.title}`);
+        imageFrame.addEventListener("click", () => showWorkDetails(work));
+
+        if (work.image_path) {
+          let imgSrc = work.image_path;
+          if (!imgSrc.startsWith("imeges/") && !imgSrc.startsWith("http") && client) {
+            const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
+            imgSrc = data.publicUrl;
+          }
+          const image = document.createElement("img");
+          image.src = imgSrc;
+          image.alt = `รูปผลงาน: ${work.title}`;
+          imageFrame.append(image);
+        }
+        card.append(imageFrame, body);
+      }
 
       if (isOwner()) {
         const actions = makeElement("div", "work-card-actions");
@@ -763,7 +1001,7 @@
     }
   }
 
-  function showWorkDetails(work) {
+  function showWorkDetails(work, initialSlideIndex = 0) {
     workDetailTitle.textContent = work.title;
     const cleanDesc = getCleanDescription(work.description);
     workDetailDescription.textContent = cleanDesc || "";
@@ -781,15 +1019,63 @@
       }
     }
 
-    if (work.image_path) {
-      const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
-      workDetailImage.src = data.publicUrl;
-      workDetailImage.alt = `รูปผลงานขนาดเต็ม: ${work.title}`;
-      workDetailImageFrame.hidden = false;
-    } else {
-      workDetailImage.removeAttribute("src");
-      workDetailImage.alt = "";
+    const slides = getWorkSlides(work);
+    if (slides && slides.length > 1 && workDetailSlidesFrame) {
       workDetailImageFrame.hidden = true;
+      workDetailSlidesFrame.hidden = false;
+      workDetailSlidesFrame.replaceChildren();
+
+      const modalCarousel = buildSlideCarousel(slides, work, true, initialSlideIndex);
+
+      // Thumbnails strip
+      const thumbStrip = makeElement("div", "slide-thumbnails-strip");
+      const thumbBtns = [];
+      slides.forEach((src, idx) => {
+        const thumbBtn = makeElement("button", `slide-thumb-btn ${idx === initialSlideIndex ? "is-active" : ""}`);
+        thumbBtn.type = "button";
+        thumbBtn.setAttribute("aria-label", `ดูสไลด์ที่ ${idx + 1}`);
+        const tImg = document.createElement("img");
+        tImg.src = src;
+        tImg.alt = `ภาพตัวอย่างสไลด์ที่ ${idx + 1}`;
+        thumbBtn.append(tImg);
+        thumbBtn.addEventListener("click", () => {
+          modalCarousel.goTo(idx);
+        });
+        thumbBtns.push(thumbBtn);
+        thumbStrip.append(thumbBtn);
+      });
+
+      modalCarousel.setOnSlideChange((newIdx) => {
+        thumbBtns.forEach((btn, idx) => {
+          btn.classList.toggle("is-active", idx === newIdx);
+        });
+        const activeBtn = thumbBtns[newIdx];
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      });
+
+      workDetailSlidesFrame.append(modalCarousel.container, thumbStrip);
+    } else {
+      if (workDetailSlidesFrame) {
+        workDetailSlidesFrame.hidden = true;
+        workDetailSlidesFrame.replaceChildren();
+      }
+
+      if (work.image_path) {
+        let imgSrc = work.image_path;
+        if (!imgSrc.startsWith("imeges/") && !imgSrc.startsWith("http") && client) {
+          const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
+          imgSrc = data.publicUrl;
+        }
+        workDetailImage.src = imgSrc;
+        workDetailImage.alt = `รูปผลงานขนาดเต็ม: ${work.title}`;
+        workDetailImageFrame.hidden = false;
+      } else {
+        workDetailImage.removeAttribute("src");
+        workDetailImage.alt = "";
+        workDetailImageFrame.hidden = true;
+      }
     }
 
     workDetailDialog.showModal();
@@ -824,6 +1110,13 @@
           ...item,
           week: parsedWeek
         };
+      });
+
+      // Ensure Week 2 default works are always present
+      SEED_WORKS.forEach((seed) => {
+        if (!works.some((w) => w.id === seed.id || w.title === seed.title)) {
+          works.push(seed);
+        }
       });
     } catch (err) {
       status.textContent = `โหลดผลงานไม่สำเร็จ: ${err.message}`;

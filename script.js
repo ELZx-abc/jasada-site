@@ -567,7 +567,10 @@
         "imeges/week2/slide-7.jpg",
         "imeges/week2/slide-8.jpg",
         "imeges/week2/slide-9.jpg",
-        "imeges/week2/slide-10.jpg"
+        "imeges/week2/slide-10.jpg",
+        "imeges/week2/slide-11.jpg",
+        "imeges/week2/slide-12.jpg",
+        "imeges/week2/slide-13.jpg"
       ]
     },
     {
@@ -604,7 +607,10 @@
         "imeges/week2/slide-7.jpg",
         "imeges/week2/slide-8.jpg",
         "imeges/week2/slide-9.jpg",
-        "imeges/week2/slide-10.jpg"
+        "imeges/week2/slide-10.jpg",
+        "imeges/week2/slide-11.jpg",
+        "imeges/week2/slide-12.jpg",
+        "imeges/week2/slide-13.jpg"
       ];
     }
     if (typeof work.description === "string") {

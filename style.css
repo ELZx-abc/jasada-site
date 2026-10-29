@@ -3849,18 +3849,20 @@ body.page-entering { animation: page-fade-in .38s ease both; }
   z-index: 6;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: rgba(8, 20, 34, 0.72);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.16);
+  max-width: 88%;
 }
 
 .slide-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   border: none;
   background: rgba(255, 255, 255, 0.42);
@@ -3877,7 +3879,7 @@ body.page-entering { animation: page-fade-in .38s ease both; }
 }
 
 .slide-dot.is-active {
-  width: 24px;
+  width: 20px;
   background: linear-gradient(90deg, #4da4de, #7bd1ff);
   box-shadow: 0 0 10px rgba(118, 198, 255, 0.65);
 }

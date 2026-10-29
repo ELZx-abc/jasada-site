@@ -562,7 +562,12 @@
         "imeges/week2/slide-2.jpg",
         "imeges/week2/slide-3.jpg",
         "imeges/week2/slide-4.jpg",
-        "imeges/week2/slide-5.jpg"
+        "imeges/week2/slide-5.jpg",
+        "imeges/week2/slide-6.jpg",
+        "imeges/week2/slide-7.jpg",
+        "imeges/week2/slide-8.jpg",
+        "imeges/week2/slide-9.jpg",
+        "imeges/week2/slide-10.jpg"
       ]
     },
     {
@@ -594,7 +599,12 @@
         "imeges/week2/slide-2.jpg",
         "imeges/week2/slide-3.jpg",
         "imeges/week2/slide-4.jpg",
-        "imeges/week2/slide-5.jpg"
+        "imeges/week2/slide-5.jpg",
+        "imeges/week2/slide-6.jpg",
+        "imeges/week2/slide-7.jpg",
+        "imeges/week2/slide-8.jpg",
+        "imeges/week2/slide-9.jpg",
+        "imeges/week2/slide-10.jpg"
       ];
     }
     if (typeof work.description === "string") {

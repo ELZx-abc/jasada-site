@@ -4,8 +4,12 @@ create table if not exists public.works (
   description text not null default '' check (char_length(description) <= 300),
   work_date date,
   image_path text,
+  week smallint check (week between 1 and 15),
   created_at timestamptz not null default now()
 );
+
+-- เพิ่มคอลัมน์ week สำหรับระบุสัปดาห์ที่ 1 - 15 (กรณีมีตาราง works อยู่ก่อนแล้ว)
+alter table public.works add column if not exists week smallint check (week between 1 and 15);
 
 alter table public.works disable row level security;
 

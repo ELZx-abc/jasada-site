@@ -330,7 +330,7 @@
     if (event.target instanceof HTMLImageElement) event.preventDefault();
   });
 
-  const navLinks = nav ? Array.from(nav.querySelectorAll(".nav-link")) : [];
+  const navLinks = nav ? Array.from(nav.querySelectorAll(".site-nav > .nav-link, .nav-dropdown-link")) : [];
   const activeNavLink = navLinks.find((link) => link.classList.contains("is-active"));
   const previousNavIndexKey = "jasada_site_previous_nav_index";
 
@@ -348,13 +348,16 @@
     sessionStorage.removeItem(previousNavIndexKey);
 
     const positionIndicator = (link) => {
-      nav.style.setProperty("--nav-indicator-x", `${link.offsetLeft}px`);
+      if (!link || !nav) return;
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      nav.style.setProperty("--nav-indicator-x", `${linkRect.left - navRect.left + nav.scrollLeft}px`);
       nav.style.setProperty("--nav-indicator-width", `${link.offsetWidth}px`);
     };
     const restoreIndicator = () => {
       const focusedLink = nav.querySelector(".nav-link:focus-visible");
       const hoveredLink = window.matchMedia("(hover: hover) and (pointer: fine)").matches
-        ? nav.querySelector(".nav-link:hover")
+        ? nav.querySelector(".nav-link:hover, .nav-dropdown:hover .nav-dropdown-link")
         : null;
       positionIndicator(focusedLink || hoveredLink || activeNavLink);
     };
@@ -387,6 +390,36 @@
     });
 
     window.addEventListener("resize", restoreIndicator);
+  }
+
+  const navDropdown = document.querySelector(".nav-dropdown");
+  if (navDropdown) {
+    const dropdownChevron = navDropdown.querySelector(".dropdown-chevron-icon");
+    const dropdownLink = navDropdown.querySelector(".nav-dropdown-link");
+
+    if (dropdownChevron) {
+      dropdownChevron.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = navDropdown.classList.toggle("is-open");
+        dropdownLink?.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      if (navDropdown.classList.contains("is-open") && !navDropdown.contains(event.target)) {
+        navDropdown.classList.remove("is-open");
+        dropdownLink?.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && navDropdown.classList.contains("is-open")) {
+        navDropdown.classList.remove("is-open");
+        dropdownLink?.setAttribute("aria-expanded", "false");
+        dropdownLink?.focus();
+      }
+    });
   }
 
   const copyAddressBtn = document.getElementById("copy-address-btn");
@@ -459,10 +492,12 @@
   const workDetailTitle = document.getElementById("work-detail-title");
   const workDetailDescription = document.getElementById("work-detail-description");
   const workDetailDate = document.getElementById("work-detail-date");
+  const workDetailWeek = document.getElementById("work-detail-week");
   const workDetailImageFrame = document.getElementById("work-detail-image-frame");
   const workDetailImage = document.getElementById("work-detail-image");
   const form = document.getElementById("work-form");
   const titleInput = document.getElementById("work-title");
+  const weekSelect = document.getElementById("work-week");
   const descriptionInput = document.getElementById("work-description");
   const dateInput = document.getElementById("work-date");
   const imageInput = document.getElementById("work-image");
@@ -473,6 +508,9 @@
   const loginForm = document.getElementById("login-form");
   const loginError = document.getElementById("login-error");
   const ownerPinInput = document.getElementById("owner-pin");
+  const worksFilterCurrent = document.getElementById("works-filter-current");
+  const weekPills = Array.from(document.querySelectorAll(".week-pill"));
+  const dropdownItems = Array.from(document.querySelectorAll(".nav-dropdown .dropdown-item, .nav-dropdown .dropdown-item-all"));
 
   const DEFAULT_PIN_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; // SHA-256 ของ "1234"
   const STORAGE_KEY_AUTH = "jasada_site_is_owner";
@@ -480,6 +518,104 @@
   let client;
   let works = [];
   let isLoadingWorks = true;
+
+  function getWeekFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const weekParam = params.get("week");
+    if (!weekParam || weekParam === "all") return null;
+    const num = parseInt(weekParam, 10);
+    return (num >= 1 && num <= 15) ? num : null;
+  }
+
+  let currentWeek = getWeekFromUrl();
+
+  function getWorkWeek(work) {
+    if (!work) return null;
+    if (typeof work.week === "number" && work.week >= 1 && work.week <= 15) {
+      return work.week;
+    }
+    if (work.week && !isNaN(Number(work.week))) {
+      const num = Number(work.week);
+      if (num >= 1 && num <= 15) return num;
+    }
+    if (typeof work.description === "string") {
+      const match = work.description.match(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]/i);
+      if (match) {
+        const num = Number(match[1]);
+        if (num >= 1 && num <= 15) return num;
+      }
+    }
+    return null;
+  }
+
+  function getCleanDescription(description) {
+    if (!description) return "";
+    return description.replace(/^\[(?:สัปดาห์ที่|Week)\s*(\d+)\]\s*/i, "").trim();
+  }
+
+  function syncFilterUI() {
+    if (worksFilterCurrent) {
+      worksFilterCurrent.textContent = currentWeek
+        ? `สัปดาห์ที่ ${currentWeek}`
+        : "ทั้งหมด (สัปดาห์ 1 - 15)";
+    }
+
+    weekPills.forEach((pill) => {
+      const pillWeek = pill.dataset.week;
+      const isActive = (currentWeek === null && pillWeek === "all") || (currentWeek !== null && pillWeek === String(currentWeek));
+      pill.classList.toggle("is-active", isActive);
+      pill.setAttribute("aria-selected", String(isActive));
+    });
+
+    dropdownItems.forEach((item) => {
+      const itemWeek = item.dataset.week;
+      const isSelected = (currentWeek === null && !itemWeek) || (currentWeek !== null && itemWeek === String(currentWeek));
+      item.classList.toggle("is-selected", isSelected);
+    });
+  }
+
+  function setWeekFilter(week, updateHistory = true) {
+    currentWeek = (typeof week === "number" && week >= 1 && week <= 15) ? week : null;
+    syncFilterUI();
+
+    if (updateHistory) {
+      const url = new URL(window.location.href);
+      if (currentWeek) {
+        url.searchParams.set("week", String(currentWeek));
+      } else {
+        url.searchParams.delete("week");
+      }
+      window.history.pushState({ week: currentWeek }, "", url.toString());
+    }
+
+    renderWorks();
+  }
+
+  weekPills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      const weekVal = pill.dataset.week;
+      setWeekFilter(weekVal === "all" ? null : Number(weekVal));
+    });
+  });
+
+  dropdownItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const weekVal = item.dataset.week;
+      setWeekFilter(weekVal ? Number(weekVal) : null);
+      const navDrop = document.querySelector(".nav-dropdown");
+      if (navDrop) {
+        navDrop.classList.remove("is-open");
+        navDrop.querySelector(".nav-dropdown-link")?.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+
+  window.addEventListener("popstate", () => {
+    currentWeek = getWeekFromUrl();
+    syncFilterUI();
+    renderWorks();
+  });
 
   function makeElement(tag, className, text) {
     const element = document.createElement(tag);
@@ -542,21 +678,33 @@
       return;
     }
 
-    if (works.length === 0) {
+    const filteredWorks = currentWeek === null
+      ? works
+      : works.filter((work) => getWorkWeek(work) === currentWeek);
+
+    if (filteredWorks.length === 0) {
       const emptyState = makeElement("div", "works-empty-state");
       const icon = makeElement("span", "works-empty-icon", "📁");
       icon.setAttribute("aria-hidden", "true");
-      const title = makeElement("h2", "works-empty-title", "ยังไม่มีรายการผลงานในขณะนี้");
+      const title = makeElement(
+        "h2",
+        "works-empty-title",
+        currentWeek ? `ยังไม่มีผลงานที่ส่งในสัปดาห์ที่ ${currentWeek}` : "ยังไม่มีรายการผลงานในขณะนี้"
+      );
       const descText = isOwner()
-        ? "กดปุ่ม \"เพิ่มผลงาน\" ด้านบนเพื่อเพิ่มผลงานแรกของคุณได้เลยครับ"
-        : "เจ้าของเว็บไซต์ยังไม่ได้เพิ่มรายการผลงาน";
+        ? (currentWeek
+            ? `กดปุ่ม "เพิ่มผลงาน" ด้านบนเพื่อส่งผลงานในสัปดาห์ที่ ${currentWeek} ได้เลยครับ`
+            : "กดปุ่ม \"เพิ่มผลงาน\" ด้านบนเพื่อเพิ่มผลงานแรกของคุณได้เลยครับ")
+        : (currentWeek
+            ? `ยังไม่มีการส่งงานในสัปดาห์ที่ ${currentWeek}`
+            : "เจ้าของเว็บไซต์ยังไม่ได้เพิ่มรายการผลงาน");
       const desc = makeElement("p", "works-empty-desc", descText);
       emptyState.append(icon, title, desc);
       grid.append(emptyState);
       return;
     }
 
-    for (const work of works) {
+    for (const work of filteredWorks) {
       const card = makeElement("article", "work-card");
       const imageFrame = makeElement("button", "work-image-frame");
       imageFrame.type = "button";
@@ -572,6 +720,11 @@
       }
 
       const body = makeElement("div", "work-card-body");
+      const weekNum = getWorkWeek(work);
+      if (weekNum) {
+        body.append(makeElement("span", "work-week-badge", `สัปดาห์ที่ ${weekNum}`));
+      }
+
       const title = makeElement("h2", "work-card-title");
       const titleButton = makeElement("button", "work-card-title-button", work.title);
       titleButton.type = "button";
@@ -579,7 +732,9 @@
       titleButton.addEventListener("click", () => showWorkDetails(work));
       title.append(titleButton);
       body.append(title);
-      if (work.description) body.append(makeElement("p", "work-card-description", work.description));
+
+      const cleanDesc = getCleanDescription(work.description);
+      if (cleanDesc) body.append(makeElement("p", "work-card-description", cleanDesc));
       if (work.work_date) body.append(makeElement("p", "work-card-date", formatDate(work.work_date)));
       card.append(imageFrame, body);
 
@@ -610,10 +765,21 @@
 
   function showWorkDetails(work) {
     workDetailTitle.textContent = work.title;
-    workDetailDescription.textContent = work.description || "";
-    workDetailDescription.hidden = !work.description;
+    const cleanDesc = getCleanDescription(work.description);
+    workDetailDescription.textContent = cleanDesc || "";
+    workDetailDescription.hidden = !cleanDesc;
     workDetailDate.textContent = work.work_date ? `วันที่ส่ง: ${formatDate(work.work_date)}` : "";
     workDetailDate.hidden = !work.work_date;
+
+    const weekNum = getWorkWeek(work);
+    if (workDetailWeek) {
+      if (weekNum) {
+        workDetailWeek.textContent = `สัปดาห์ที่ ${weekNum}`;
+        workDetailWeek.hidden = false;
+      } else {
+        workDetailWeek.hidden = true;
+      }
+    }
 
     if (work.image_path) {
       const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(work.image_path);
@@ -635,14 +801,35 @@
     isLoadingWorks = true;
     await renderWorks();
     try {
-      const { data, error } = await client
-        .from("works")
-        .select("id, title, description, work_date, image_path, created_at")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      works = data || [];
+      let rawWorks;
+      try {
+        const { data, error } = await client
+          .from("works")
+          .select("id, title, description, work_date, image_path, created_at, week")
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        rawWorks = data;
+      } catch (errWithWeek) {
+        const { data, error } = await client
+          .from("works")
+          .select("id, title, description, work_date, image_path, created_at")
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        rawWorks = data;
+      }
+
+      works = (rawWorks || []).map((item) => {
+        const parsedWeek = getWorkWeek(item);
+        return {
+          ...item,
+          week: parsedWeek
+        };
+      });
+    } catch (err) {
+      status.textContent = `โหลดผลงานไม่สำเร็จ: ${err.message}`;
     } finally {
       isLoadingWorks = false;
+      syncFilterUI();
       await renderWorks();
     }
   }
@@ -650,6 +837,9 @@
   function resetWorkForm() {
     form.reset();
     document.getElementById("work-id").value = "";
+    if (weekSelect) {
+      weekSelect.value = currentWeek ? String(currentWeek) : "1";
+    }
     removeImageRow.hidden = true;
     formError.textContent = "";
   }
@@ -661,6 +851,9 @@
     }
     resetWorkForm();
     document.getElementById("dialog-title").textContent = "เพิ่มผลงาน";
+    if (weekSelect) {
+      weekSelect.value = currentWeek ? String(currentWeek) : "1";
+    }
     dialog.showModal();
     titleInput.focus();
   }
@@ -671,8 +864,12 @@
     document.getElementById("dialog-title").textContent = "แก้ไขผลงาน";
     document.getElementById("work-id").value = work.id;
     titleInput.value = work.title;
-    descriptionInput.value = work.description || "";
+    descriptionInput.value = getCleanDescription(work.description) || "";
     dateInput.value = work.work_date || "";
+    if (weekSelect) {
+      const w = getWorkWeek(work);
+      weekSelect.value = w ? String(w) : "1";
+    }
     removeImageRow.hidden = !work.image_path;
     dialog.showModal();
     titleInput.focus();
@@ -732,6 +929,8 @@
     const existing = works.find((item) => item.id === id);
     const workId = existing ? existing.id : crypto.randomUUID();
     let uploadedPath = null;
+    const selectedWeekNum = weekSelect ? Number(weekSelect.value) : 1;
+    const cleanDesc = descriptionInput.value.trim();
 
     try {
       if (selectedImage) uploadedPath = await uploadImage(selectedImage);
@@ -740,17 +939,37 @@
           ? existing.image_path
           : null
       );
-      const workData = {
-        title,
-        description: descriptionInput.value.trim(),
-        work_date: dateInput.value || null,
-        image_path: imagePath
-      };
 
-      const result = existing
-        ? await client.from("works").update(workData).eq("id", workId).select("id").single()
-        : await client.from("works").insert({ id: workId, ...workData }).select("id").single();
-      if (result.error) throw result.error;
+      // 1. Try saving with native week column
+      let saved = false;
+      try {
+        const workData = {
+          title,
+          description: cleanDesc,
+          work_date: dateInput.value || null,
+          image_path: imagePath,
+          week: selectedWeekNum
+        };
+        const result = existing
+          ? await client.from("works").update(workData).eq("id", workId).select("id").single()
+          : await client.from("works").insert({ id: workId, ...workData }).select("id").single();
+        if (result.error) throw result.error;
+        saved = true;
+      } catch (colErr) {
+        // 2. Fallback: encode [สัปดาห์ที่ X] into description
+        const fallbackDesc = `[สัปดาห์ที่ ${selectedWeekNum}] ${cleanDesc}`.trim();
+        const fallbackData = {
+          title,
+          description: fallbackDesc,
+          work_date: dateInput.value || null,
+          image_path: imagePath
+        };
+        const result = existing
+          ? await client.from("works").update(fallbackData).eq("id", workId).select("id").single()
+          : await client.from("works").insert({ id: workId, ...fallbackData }).select("id").single();
+        if (result.error) throw result.error;
+        saved = true;
+      }
 
       if (existing && existing.image_path && existing.image_path !== imagePath) {
         try {
@@ -858,6 +1077,7 @@
   form.addEventListener("submit", submitWork);
 
   async function initialize() {
+    syncFilterUI();
     syncControls();
 
     if (!window.supabase) {
@@ -886,6 +1106,7 @@
   initialize().catch((error) => {
     status.textContent = `โหลดผลงานไม่สำเร็จ: ${error.message}`;
   });
+
   // Interactive Click Ripple Effect
   document.addEventListener("click", (e) => {
     const target = e.target.closest(".button, .small-button, .theme-toggle, .nav-link, .address-copy-btn");

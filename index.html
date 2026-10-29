@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=11">
-  <script src="script.js?v=6" defer></script>
+  <link rel="stylesheet" href="style.css?v=12">
+  <script src="script.js?v=7" defer></script>
 </head>
 <body>
   <div class="page-sparkles" aria-hidden="true">
@@ -31,7 +31,38 @@
       <nav class="site-nav" aria-label="เมนูหลัก">
         <a class="nav-link is-active" href="index.html" aria-current="page"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"></path></svg>หน้าแรก</a>
         <a class="nav-link" href="profile.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg>ประวัติส่วนตัว</a>
-        <a class="nav-link" href="works.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>งานที่ส่ง</a>
+        <div class="nav-dropdown" id="nav-works-dropdown">
+          <a class="nav-link nav-dropdown-link" href="works.html" id="works-dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>
+            <span>งานที่ส่ง</span>
+            <span class="dropdown-chevron-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
+            </span>
+          </a>
+          <div class="nav-dropdown-menu" id="works-dropdown-menu" role="menu" aria-label="เลือกลำดับสัปดาห์งานที่ส่ง">
+            <div class="dropdown-menu-header">
+              <span class="dropdown-menu-title">เลือกดูตามสัปดาห์</span>
+              <a class="dropdown-item-all" href="works.html" role="menuitem">ดูทั้งหมด</a>
+            </div>
+            <div class="dropdown-menu-grid">
+              <a class="dropdown-item" href="works.html?week=1" role="menuitem" data-week="1"><span class="dropdown-badge">W1</span><span>สัปดาห์ 1</span></a>
+              <a class="dropdown-item" href="works.html?week=2" role="menuitem" data-week="2"><span class="dropdown-badge">W2</span><span>สัปดาห์ 2</span></a>
+              <a class="dropdown-item" href="works.html?week=3" role="menuitem" data-week="3"><span class="dropdown-badge">W3</span><span>สัปดาห์ 3</span></a>
+              <a class="dropdown-item" href="works.html?week=4" role="menuitem" data-week="4"><span class="dropdown-badge">W4</span><span>สัปดาห์ 4</span></a>
+              <a class="dropdown-item" href="works.html?week=5" role="menuitem" data-week="5"><span class="dropdown-badge">W5</span><span>สัปดาห์ 5</span></a>
+              <a class="dropdown-item" href="works.html?week=6" role="menuitem" data-week="6"><span class="dropdown-badge">W6</span><span>สัปดาห์ 6</span></a>
+              <a class="dropdown-item" href="works.html?week=7" role="menuitem" data-week="7"><span class="dropdown-badge">W7</span><span>สัปดาห์ 7</span></a>
+              <a class="dropdown-item" href="works.html?week=8" role="menuitem" data-week="8"><span class="dropdown-badge">W8</span><span>สัปดาห์ 8</span></a>
+              <a class="dropdown-item" href="works.html?week=9" role="menuitem" data-week="9"><span class="dropdown-badge">W9</span><span>สัปดาห์ 9</span></a>
+              <a class="dropdown-item" href="works.html?week=10" role="menuitem" data-week="10"><span class="dropdown-badge">W10</span><span>สัปดาห์ 10</span></a>
+              <a class="dropdown-item" href="works.html?week=11" role="menuitem" data-week="11"><span class="dropdown-badge">W11</span><span>สัปดาห์ 11</span></a>
+              <a class="dropdown-item" href="works.html?week=12" role="menuitem" data-week="12"><span class="dropdown-badge">W12</span><span>สัปดาห์ 12</span></a>
+              <a class="dropdown-item" href="works.html?week=13" role="menuitem" data-week="13"><span class="dropdown-badge">W13</span><span>สัปดาห์ 13</span></a>
+              <a class="dropdown-item" href="works.html?week=14" role="menuitem" data-week="14"><span class="dropdown-badge">W14</span><span>สัปดาห์ 14</span></a>
+              <a class="dropdown-item" href="works.html?week=15" role="menuitem" data-week="15"><span class="dropdown-badge">W15</span><span>สัปดาห์ 15</span></a>
+            </div>
+          </div>
+        </div>
       </nav>
     </div>
     <div class="header-banner" role="region" aria-label="แบนเนอร์เว็บไซต์ My Profile">

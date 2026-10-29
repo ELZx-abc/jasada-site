@@ -9,10 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <script src="script.js?v=6" defer></script>
+  <script src="script.js?v=7" defer></script>
 </head>
 <body data-page="works">
   <div class="page-sparkles" aria-hidden="true">
@@ -33,7 +33,38 @@
       <nav class="site-nav" aria-label="เมนูหลัก">
         <a class="nav-link" href="index.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"></path></svg>หน้าแรก</a>
         <a class="nav-link" href="profile.html"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path></svg>ประวัติส่วนตัว</a>
-        <a class="nav-link is-active" href="works.html" aria-current="page"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>งานที่ส่ง</a>
+        <div class="nav-dropdown" id="nav-works-dropdown">
+          <a class="nav-link nav-dropdown-link is-active" href="works.html" id="works-dropdown-btn" aria-current="page" aria-haspopup="true" aria-expanded="false">
+            <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7.5h7l2 2h9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M3 7V5.5a2 2 0 0 1 2-2h4l2 2h5"></path></svg>
+            <span>งานที่ส่ง</span>
+            <span class="dropdown-chevron-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
+            </span>
+          </a>
+          <div class="nav-dropdown-menu" id="works-dropdown-menu" role="menu" aria-label="เลือกลำดับสัปดาห์งานที่ส่ง">
+            <div class="dropdown-menu-header">
+              <span class="dropdown-menu-title">เลือกดูตามสัปดาห์</span>
+              <a class="dropdown-item-all is-selected" href="works.html" role="menuitem">ดูทั้งหมด</a>
+            </div>
+            <div class="dropdown-menu-grid">
+              <a class="dropdown-item" href="works.html?week=1" role="menuitem" data-week="1"><span class="dropdown-badge">W1</span><span>สัปดาห์ 1</span></a>
+              <a class="dropdown-item" href="works.html?week=2" role="menuitem" data-week="2"><span class="dropdown-badge">W2</span><span>สัปดาห์ 2</span></a>
+              <a class="dropdown-item" href="works.html?week=3" role="menuitem" data-week="3"><span class="dropdown-badge">W3</span><span>สัปดาห์ 3</span></a>
+              <a class="dropdown-item" href="works.html?week=4" role="menuitem" data-week="4"><span class="dropdown-badge">W4</span><span>สัปดาห์ 4</span></a>
+              <a class="dropdown-item" href="works.html?week=5" role="menuitem" data-week="5"><span class="dropdown-badge">W5</span><span>สัปดาห์ 5</span></a>
+              <a class="dropdown-item" href="works.html?week=6" role="menuitem" data-week="6"><span class="dropdown-badge">W6</span><span>สัปดาห์ 6</span></a>
+              <a class="dropdown-item" href="works.html?week=7" role="menuitem" data-week="7"><span class="dropdown-badge">W7</span><span>สัปดาห์ 7</span></a>
+              <a class="dropdown-item" href="works.html?week=8" role="menuitem" data-week="8"><span class="dropdown-badge">W8</span><span>สัปดาห์ 8</span></a>
+              <a class="dropdown-item" href="works.html?week=9" role="menuitem" data-week="9"><span class="dropdown-badge">W9</span><span>สัปดาห์ 9</span></a>
+              <a class="dropdown-item" href="works.html?week=10" role="menuitem" data-week="10"><span class="dropdown-badge">W10</span><span>สัปดาห์ 10</span></a>
+              <a class="dropdown-item" href="works.html?week=11" role="menuitem" data-week="11"><span class="dropdown-badge">W11</span><span>สัปดาห์ 11</span></a>
+              <a class="dropdown-item" href="works.html?week=12" role="menuitem" data-week="12"><span class="dropdown-badge">W12</span><span>สัปดาห์ 12</span></a>
+              <a class="dropdown-item" href="works.html?week=13" role="menuitem" data-week="13"><span class="dropdown-badge">W13</span><span>สัปดาห์ 13</span></a>
+              <a class="dropdown-item" href="works.html?week=14" role="menuitem" data-week="14"><span class="dropdown-badge">W14</span><span>สัปดาห์ 14</span></a>
+              <a class="dropdown-item" href="works.html?week=15" role="menuitem" data-week="15"><span class="dropdown-badge">W15</span><span>สัปดาห์ 15</span></a>
+            </div>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -52,6 +83,31 @@
       </div>
     </div>
 
+    <div class="works-filter-section" id="works-filter-section">
+      <div class="works-filter-header">
+        <span class="works-filter-label"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> กรองตามสัปดาห์:</span>
+        <span class="works-filter-current" id="works-filter-current">ทั้งหมด (สัปดาห์ 1 - 15)</span>
+      </div>
+      <div class="week-pills-bar" role="tablist" aria-label="ตัวกรองสัปดาห์ที่ส่ง">
+        <button type="button" class="week-pill is-active" data-week="all" role="tab" aria-selected="true">ทั้งหมด</button>
+        <button type="button" class="week-pill" data-week="1" role="tab" aria-selected="false">สัปดาห์ 1</button>
+        <button type="button" class="week-pill" data-week="2" role="tab" aria-selected="false">สัปดาห์ 2</button>
+        <button type="button" class="week-pill" data-week="3" role="tab" aria-selected="false">สัปดาห์ 3</button>
+        <button type="button" class="week-pill" data-week="4" role="tab" aria-selected="false">สัปดาห์ 4</button>
+        <button type="button" class="week-pill" data-week="5" role="tab" aria-selected="false">สัปดาห์ 5</button>
+        <button type="button" class="week-pill" data-week="6" role="tab" aria-selected="false">สัปดาห์ 6</button>
+        <button type="button" class="week-pill" data-week="7" role="tab" aria-selected="false">สัปดาห์ 7</button>
+        <button type="button" class="week-pill" data-week="8" role="tab" aria-selected="false">สัปดาห์ 8</button>
+        <button type="button" class="week-pill" data-week="9" role="tab" aria-selected="false">สัปดาห์ 9</button>
+        <button type="button" class="week-pill" data-week="10" role="tab" aria-selected="false">สัปดาห์ 10</button>
+        <button type="button" class="week-pill" data-week="11" role="tab" aria-selected="false">สัปดาห์ 11</button>
+        <button type="button" class="week-pill" data-week="12" role="tab" aria-selected="false">สัปดาห์ 12</button>
+        <button type="button" class="week-pill" data-week="13" role="tab" aria-selected="false">สัปดาห์ 13</button>
+        <button type="button" class="week-pill" data-week="14" role="tab" aria-selected="false">สัปดาห์ 14</button>
+        <button type="button" class="week-pill" data-week="15" role="tab" aria-selected="false">สัปดาห์ 15</button>
+      </div>
+    </div>
+
     <p class="page-status" id="page-status" role="status" aria-live="polite"></p>
     <section class="works-grid" id="works-grid" aria-label="รายการผลงาน" aria-busy="true"></section>
   </main>
@@ -66,6 +122,26 @@
         <button class="dialog-close" id="close-dialog" type="button" aria-label="ปิดหน้าต่าง">×</button>
       </div>
       <input id="work-id" name="id" type="hidden">
+      <label class="form-field" for="work-week">สัปดาห์ที่ส่ง <span class="required-mark">*</span>
+        <select id="work-week" name="week" required>
+          <option value="" disabled selected>-- เลือกสัปดาห์ที่ส่ง --</option>
+          <option value="1">สัปดาห์ที่ 1</option>
+          <option value="2">สัปดาห์ที่ 2</option>
+          <option value="3">สัปดาห์ที่ 3</option>
+          <option value="4">สัปดาห์ที่ 4</option>
+          <option value="5">สัปดาห์ที่ 5</option>
+          <option value="6">สัปดาห์ที่ 6</option>
+          <option value="7">สัปดาห์ที่ 7</option>
+          <option value="8">สัปดาห์ที่ 8</option>
+          <option value="9">สัปดาห์ที่ 9</option>
+          <option value="10">สัปดาห์ที่ 10</option>
+          <option value="11">สัปดาห์ที่ 11</option>
+          <option value="12">สัปดาห์ที่ 12</option>
+          <option value="13">สัปดาห์ที่ 13</option>
+          <option value="14">สัปดาห์ที่ 14</option>
+          <option value="15">สัปดาห์ที่ 15</option>
+        </select>
+      </label>
       <label class="form-field" for="work-title">ชื่อผลงาน <span class="required-mark">*</span>
         <input id="work-title" name="title" type="text" maxlength="100" required>
       </label>
@@ -101,7 +177,10 @@
         <button class="dialog-close" id="close-work-detail" type="button" aria-label="ปิดรายละเอียด">×</button>
       </div>
       <p class="work-detail-description" id="work-detail-description" hidden></p>
-      <p class="work-detail-date" id="work-detail-date" hidden></p>
+      <div class="work-detail-meta">
+        <span class="work-week-badge" id="work-detail-week" hidden></span>
+        <p class="work-detail-date" id="work-detail-date" hidden></p>
+      </div>
       <div class="work-detail-image-frame" id="work-detail-image-frame" hidden>
         <img id="work-detail-image" alt="">
       </div>

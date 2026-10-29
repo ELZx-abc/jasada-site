@@ -572,23 +572,8 @@
         "imeges/week2/slide-12.jpg",
         "imeges/week2/slide-13.jpg"
       ]
-    },
-    {
-      id: "a1000000-0000-0000-0000-000000000002",
-      title: "เอกสารคู่มือการพัฒนาระบบ: Hacking the SDLC",
-      description: "เอกสารและหลักการพัฒนาระบบสารสนเทศ เพื่อการวางแผนงบประมาณ การจัดการข้อมูล และการสร้างคุณค่าทางธุรกิจ",
-      work_date: "2026-10-29",
-      image_path: "imeges/week2/slide-2.jpg",
-      week: 2
-    },
-    {
-      id: "a1000000-0000-0000-0000-000000000003",
-      title: "แผนผัง The 7-Step Street Map และ Phase Impact Matrix",
-      description: "ผังกระบวนการ 7 ขั้นตอนการพัฒนาระบบ ตั้งแต่ปัญหาจนถึงการบำรุงรักษา พร้อมเมทริกซ์การจัดระเบียบบทบาทหน้าที่ของผู้เกี่ยวข้อง",
-      work_date: "2026-10-29",
-      image_path: "imeges/week2/slide-4.jpg",
-      week: 2
     }
+  
   ];
 
   function getWorkSlides(work) {

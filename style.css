@@ -3599,6 +3599,142 @@ body.page-entering { animation: page-fade-in .38s ease both; }
   position: relative;
   display: flex;
   flex-direction: column;
+  grid-column: 1 / -1;
+  max-width: 1060px;
+  width: 100%;
+  margin-inline: auto;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(10, 24, 40, 0.12);
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.work-card-slide:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 54px rgba(10, 24, 40, 0.18);
+}
+
+.work-card-slide .slide-carousel-card {
+  border-radius: 16px 16px 0 0;
+  box-shadow: none;
+}
+
+.work-card-slide .work-card-body {
+  padding: 24px 28px 28px;
+  min-height: auto;
+}
+
+.work-card-slide .work-card-badges {
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.work-card-slide .work-week-badge,
+.work-card-slide .work-type-badge {
+  font-size: 13px;
+  padding: 5px 14px;
+  border-radius: 8px;
+}
+
+.work-card-slide .work-card-title {
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+.work-card-slide .work-card-description {
+  font-size: 15.5px;
+  line-height: 1.7;
+  margin-top: 10px;
+  max-width: 900px;
+}
+
+.work-card-slide .work-card-date {
+  font-size: 13px;
+  padding-top: 14px;
+}
+
+.work-card-slide .slide-zone-btn {
+  width: 52px;
+  height: 52px;
+}
+
+.work-card-slide .slide-zone-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.work-card-slide .slide-counter-badge {
+  top: 18px;
+  left: 18px;
+  font-size: 13.5px;
+  padding: 6px 15px;
+}
+
+.work-card-slide .slide-expand-btn {
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+}
+
+.work-card-slide .slide-expand-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.work-card-slide .slide-pagination {
+  bottom: 18px;
+  padding: 5px 12px;
+}
+
+.work-card-slide .slide-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.work-card-slide .slide-dot.is-active {
+  width: 24px;
+}
+
+@media (max-width: 768px) {
+  .work-card-slide {
+    max-width: 100%;
+    border-radius: 14px;
+  }
+  .work-card-slide .work-card-body {
+    padding: 16px 16px 20px;
+  }
+  .work-card-slide .work-card-title {
+    font-size: 19px;
+  }
+  .work-card-slide .work-card-description {
+    font-size: 13.5px;
+  }
+  .work-card-slide .slide-zone-btn {
+    width: 42px;
+    height: 42px;
+  }
+  .work-card-slide .slide-zone-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  .work-card-slide .slide-counter-badge {
+    top: 12px;
+    left: 12px;
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+  .work-card-slide .slide-expand-btn {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  .work-card-slide .slide-pagination {
+    bottom: 12px;
+  }
 }
 
 .slide-carousel-container,

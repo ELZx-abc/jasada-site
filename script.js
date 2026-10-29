@@ -572,8 +572,31 @@
         "imeges/week2/slide-12.jpg",
         "imeges/week2/slide-13.jpg"
       ]
+    },
+    {
+      id: "b2000000-0000-0000-0000-000000000001",
+      title: "ผังสรุปความรู้: การพัฒนาระบบสารสนเทศ (SDLC Mind Map)",
+      description: "สรุปสาระสำคัญการพัฒนาระบบสารสนเทศ ครอบคลุมความหมาย ประโยชน์ และ 7 ขั้นตอน SDLC",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/work-mindmap.png",
+      week: 2
+    },
+    {
+      id: "b2000000-0000-0000-0000-000000000002",
+      title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 1 (10 ข้อ)",
+      description: "แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 1 การพัฒนาระบบสารสนเทศ พร้อมเฉลย 10 ข้อ",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/work-quiz.jpg",
+      week: 2
+    },
+    {
+      id: "b2000000-0000-0000-0000-000000000003",
+      title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 1",
+      description: "แบบฝึกหัดสรุปคำตอบ หน่วยการเรียนรู้ที่ 1 กระบวนการวิเคราะห์และขั้นตอนการดูแลรักษาระบบ",
+      work_date: "2026-10-29",
+      image_path: "imeges/week2/work-exercise.jpg",
+      week: 2
     }
-  
   ];
 
   function getWorkSlides(work) {
@@ -897,8 +920,17 @@
     }
 
     const filteredWorks = currentWeek === null
-      ? works
+      ? [...works]
       : works.filter((work) => getWorkWeek(work) === currentWeek);
+
+    // ให้ผลงานสไลด์นำเสนอ (Showcase) ขึ้นก่อนเป็นหัวข้อหลัก
+    filteredWorks.sort((a, b) => {
+      const aSlides = Boolean(getWorkSlides(a)?.length > 1);
+      const bSlides = Boolean(getWorkSlides(b)?.length > 1);
+      if (aSlides && !bSlides) return -1;
+      if (!aSlides && bSlides) return 1;
+      return 0;
+    });
 
     if (filteredWorks.length === 0) {
       const emptyState = makeElement("div", "works-empty-state");

@@ -548,6 +548,15 @@
     ) {
       return 2;
     }
+    if (
+      work.id === "c3000000-0000-0000-0000-000000000001" ||
+      work.id === "c3000000-0000-0000-0000-000000000002" ||
+      work.id === "c3000000-0000-0000-0000-000000000003" ||
+      work.id === "c3000000-0000-0000-0000-000000000004" ||
+      (typeof work.image_path === "string" && work.image_path.includes("week3"))
+    ) {
+      return 3;
+    }
     if (typeof work.description === "string") {
       const match = work.description.match(/^\[(?:สัปดาห์ที่|สัปดาห์|Week)\s*(\d+)\]/i);
       if (match) {
@@ -559,6 +568,57 @@
   }
 
   const SEED_WORKS = [
+    // ================= สัปดาห์ที่ 3 =================
+    {
+      id: "c3000000-0000-0000-0000-000000000001",
+      title: "โรงงานประกอบวัตถุ: หลักการและแนวคิดเชิงวัตถุ (OOP Concepts)",
+      description: "สไลด์นำเสนอสรุปเนื้อหาหลักการและแนวคิดเชิงวัตถุ เข้าใจง่าย สไตล์การ์ตูนโรงงานประกอบวัตถุ ครอบคลุม Object, Class และ 4 เสาหลัก OOP (Encapsulation, Inheritance, Polymorphism, Abstraction) ทั้งหมด 15 หน้า [หน่วยการเรียนรู้ที่ 2]",
+      work_date: "2026-11-05",
+      image_path: "imeges/week3/slide-1.jpg",
+      week: 3,
+      slides: [
+        "imeges/week3/slide-1.jpg",
+        "imeges/week3/slide-2.jpg",
+        "imeges/week3/slide-3.jpg",
+        "imeges/week3/slide-4.jpg",
+        "imeges/week3/slide-5.jpg",
+        "imeges/week3/slide-6.jpg",
+        "imeges/week3/slide-7.jpg",
+        "imeges/week3/slide-8.jpg",
+        "imeges/week3/slide-9.jpg",
+        "imeges/week3/slide-10.jpg",
+        "imeges/week3/slide-11.jpg",
+        "imeges/week3/slide-12.jpg",
+        "imeges/week3/slide-13.jpg",
+        "imeges/week3/slide-14.jpg",
+        "imeges/week3/slide-15.jpg"
+      ]
+    },
+    {
+      id: "c3000000-0000-0000-0000-000000000002",
+      title: "ผังสรุปความรู้: หลักการและแนวคิดเชิงวัตถุ (OOP Mind Map)",
+      description: "[สัปดาห์ที่ 3] สรุปสาระสำคัญหน่วยการเรียนรู้ที่ 2 ความหมายและองค์ประกอบของวัตถุ ขอบเขตระบบ ความสัมพันธ์และคลาส (Object & Class)",
+      work_date: "2026-11-05",
+      image_path: "imeges/week3/work-mindmap.jpg?v=2",
+      week: 3
+    },
+    {
+      id: "c3000000-0000-0000-0000-000000000003",
+      title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 2 (10 ข้อ)",
+      description: "[สัปดาห์ที่ 3] แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 2 หลักการและแนวคิดเชิงวัตถุ พร้อมเฉลย 10 ข้อ",
+      work_date: "2026-11-05",
+      image_path: "imeges/week3/work-quiz.jpg",
+      week: 3
+    },
+    {
+      id: "c3000000-0000-0000-0000-000000000004",
+      title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 2",
+      description: "[สัปดาห์ที่ 3] แบบฝึกหัดหน่วยการเรียนรู้ที่ 2 เรื่องหลักการและแนวคิดเชิงวัตถุ ตัวอย่าง Object, Attribute, Activity, Behavior และการบำรุงรักษาซอฟต์แวร์",
+      work_date: "2026-11-05",
+      image_path: "imeges/week3/work-exercise.jpg",
+      week: 3
+    },
+    // ================= สัปดาห์ที่ 2 =================
     {
       id: "a1000000-0000-0000-0000-000000000001",
       title: "The Creator's Playbook: ถอดรหัส SDLC",
@@ -630,13 +690,20 @@
         "imeges/week2/slide-13.jpg"
       ];
     }
+    if (
+      work.id === "c3000000-0000-0000-0000-000000000001" ||
+      (work.title && work.title.includes("โรงงานประกอบวัตถุ"))
+    ) {
+      return Array.from({ length: 15 }, (_, i) => `imeges/week3/slide-${i + 1}.jpg`);
+    }
     if (typeof work.description === "string") {
       const match = work.description.match(/\[slides:\s*([^\]]+)\]/i);
       if (match) {
         const val = match[1].trim();
         if (/^\d+$/.test(val)) {
           const count = parseInt(val, 10);
-          return Array.from({ length: count }, (_, i) => `imeges/week2/slide-${i + 1}.jpg`);
+          const weekFolder = getWorkWeek(work) === 3 ? "week3" : "week2";
+          return Array.from({ length: count }, (_, i) => `imeges/${weekFolder}/slide-${i + 1}.jpg`);
         }
         return val.split(",").map((s) => s.trim());
       }
@@ -932,8 +999,13 @@
       ? [...works]
       : works.filter((work) => getWorkWeek(work) === currentWeek);
 
-    // ให้ผลงานสไลด์นำเสนอ (Showcase) ขึ้นก่อนเป็นหัวข้อหลัก
+    // ให้ผลงานสไลด์นำเสนอ (Showcase) ขึ้นก่อนเป็นหัวข้อหลัก และเรียงตามสัปดาห์ล่าสุดลงไป
     filteredWorks.sort((a, b) => {
+      const weekA = getWorkWeek(a) || 0;
+      const weekB = getWorkWeek(b) || 0;
+      if (weekA !== weekB) {
+        return weekB - weekA;
+      }
       const aSlides = Boolean(getWorkSlides(a)?.length > 1);
       const bSlides = Boolean(getWorkSlides(b)?.length > 1);
       if (aSlides && !bSlides) return -1;
@@ -1129,21 +1201,42 @@
     isLoadingWorks = true;
     await renderWorks();
     try {
-      let rawWorks;
-      try {
-        const { data, error } = await client
-          .from("works")
-          .select("id, title, description, work_date, image_path, created_at, week")
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        rawWorks = data;
-      } catch (errWithWeek) {
-        const { data, error } = await client
-          .from("works")
-          .select("id, title, description, work_date, image_path, created_at")
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        rawWorks = data;
+      let rawWorks = null;
+      if (client) {
+        const withTimeout = (promise, ms = 2000) => {
+          let timeoutId;
+          const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error("Network timeout")), ms);
+          });
+          return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+        };
+
+        try {
+          const { data, error } = await withTimeout(
+            client
+              .from("works")
+              .select("id, title, description, work_date, image_path, created_at, week")
+              .order("created_at", { ascending: false }),
+            2000
+          );
+          if (error) throw error;
+          rawWorks = data;
+        } catch (errWithWeek) {
+          try {
+            const { data, error } = await withTimeout(
+              client
+                .from("works")
+                .select("id, title, description, work_date, image_path, created_at")
+                .order("created_at", { ascending: false }),
+              2000
+            );
+            if (!error && data) {
+              rawWorks = data;
+            }
+          } catch (fetchErr) {
+            // Ignore fetch error to use seed works
+          }
+        }
       }
 
       works = (rawWorks || []).map((item) => {
@@ -1161,7 +1254,12 @@
         }
       });
     } catch (err) {
-      status.textContent = `โหลดผลงานไม่สำเร็จ: ${err.message}`;
+      console.warn("โหลดผลงานจากเซิร์ฟเวอร์ไม่สำเร็จ ใช้ผลงานเริ่มต้น:", err);
+      SEED_WORKS.forEach((seed) => {
+        if (!works.some((w) => w.id === seed.id || w.title === seed.title)) {
+          works.push(seed);
+        }
+      });
     } finally {
       isLoadingWorks = false;
       syncFilterUI();
@@ -1416,7 +1514,7 @@
     syncControls();
 
     if (!window.supabase) {
-      status.textContent = "โหลดไลบรารี Supabase ไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
+      works = [...SEED_WORKS];
       isLoadingWorks = false;
       await renderWorks();
       return;
@@ -1428,7 +1526,7 @@
       window.SUPABASE_URL.includes("your-project.supabase.co") ||
       window.SUPABASE_ANON_KEY.startsWith("sb_publishable_ใส่คีย์ของคุณ")
     ) {
-      status.textContent = "ยังไม่ได้ตั้งค่า Supabase กรุณากรอก Project URL และ key ใน supabase-config.js";
+      works = [...SEED_WORKS];
       isLoadingWorks = false;
       await renderWorks();
       return;

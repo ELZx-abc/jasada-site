@@ -740,22 +740,35 @@
 
   function getWorkSlides(work) {
     if (!work) return null;
+    // Mind Map, แบบทดสอบ และ แบบฝึกหัด จะต้องเป็นการ์ดรูปภาพปกติเหมือนแบบฝึกหัดเสมอ ไม่เป็นสไลด์เลื่อน
+    const titleStr = typeof work.title === "string" ? work.title : "";
+    if (
+      titleStr.includes("Mind Map") ||
+      titleStr.includes("ผังสรุปความรู้") ||
+      titleStr.includes("แบบทดสอบ") ||
+      titleStr.includes("แบบฝึกหัด")
+    ) {
+      return null;
+    }
     if (Array.isArray(work.slides) && work.slides.length > 0) {
       return work.slides;
     }
     if (
       work.id === "d4000000-0000-0000-0000-000000000001" ||
-      (work.title && (work.title.includes("OOAD") || work.title.includes("การวิเคราะห์และออกแบบระบบเชิงวัตถุ") || work.title.includes("การวิเคราะห์และออกแบบเชิงวัตถุ")))
+      (titleStr.includes("OOAD Cheat Sheet") || titleStr.includes("คู่มือสรุป: การวิเคราะห์และออกแบบระบบเชิงวัตถุ"))
     ) {
       return Array.from({ length: 10 }, (_, i) => `imeges/week4/slide-${i + 1}.jpg`);
     }
     if (
       work.id === "c3000000-0000-0000-0000-000000000001" ||
-      (work.title && (work.title.includes("หลักการออกแบบระบบ") || work.title.includes("UML") || work.title.includes("การออกแบบระบบ")))
+      titleStr.includes("Unified Modeling Language (UML)")
     ) {
       return Array.from({ length: 11 }, (_, i) => `imeges/week3/slide-${i + 1}.jpg`);
     }
-    if (work.id === "a1000000-0000-0000-0000-000000000001" || (work.title && work.title.includes("Creator's Playbook"))) {
+    if (
+      work.id === "a1000000-0000-0000-0000-000000000001" ||
+      titleStr.includes("Creator's Playbook")
+    ) {
       return [
         "imeges/week2/slide-1.jpg",
         "imeges/week2/slide-2.jpg",

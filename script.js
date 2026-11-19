@@ -530,6 +530,24 @@
 
   let currentWeek = getWeekFromUrl();
 
+  const WEEK_INFO = {
+    2: {
+      number: 2,
+      title: "การพัฒนาระบบสารสนเทศ",
+      subtitle: "หน่วยการเรียนรู้ที่ 1 (SDLC ฉบับคนสร้างระบบ)"
+    },
+    3: {
+      number: 3,
+      title: "การออกแบบระบบ",
+      subtitle: "หน่วยการเรียนรู้ที่ 3 (หลักการออกแบบระบบด้วย UML)"
+    },
+    4: {
+      number: 4,
+      title: "การวิเคราะห์และออกแบบเชิงวัตถุ",
+      subtitle: "หน่วยการเรียนรู้ที่ 4 (OOAD & UML Cheat Sheet)"
+    }
+  };
+
   function getWorkWeek(work) {
     if (!work) return null;
     if (typeof work.week === "number" && work.week >= 1 && work.week <= 15) {
@@ -540,13 +558,13 @@
       if (num >= 1 && num <= 15) return num;
     }
     if (
-      work.id === "a1000000-0000-0000-0000-000000000001" ||
-      work.id === "b2000000-0000-0000-0000-000000000001" ||
-      work.id === "b2000000-0000-0000-0000-000000000002" ||
-      work.id === "b2000000-0000-0000-0000-000000000003" ||
-      (typeof work.image_path === "string" && work.image_path.includes("week2"))
+      work.id === "d4000000-0000-0000-0000-000000000001" ||
+      work.id === "d4000000-0000-0000-0000-000000000002" ||
+      work.id === "d4000000-0000-0000-0000-000000000003" ||
+      work.id === "d4000000-0000-0000-0000-000000000004" ||
+      (typeof work.image_path === "string" && work.image_path.includes("week4"))
     ) {
-      return 2;
+      return 4;
     }
     if (
       work.id === "c3000000-0000-0000-0000-000000000001" ||
@@ -556,6 +574,15 @@
       (typeof work.image_path === "string" && work.image_path.includes("week3"))
     ) {
       return 3;
+    }
+    if (
+      work.id === "a1000000-0000-0000-0000-000000000001" ||
+      work.id === "b2000000-0000-0000-0000-000000000001" ||
+      work.id === "b2000000-0000-0000-0000-000000000002" ||
+      work.id === "b2000000-0000-0000-0000-000000000003" ||
+      (typeof work.image_path === "string" && work.image_path.includes("week2"))
+    ) {
+      return 2;
     }
     if (typeof work.description === "string") {
       const match = work.description.match(/^\[(?:สัปดาห์ที่|สัปดาห์|Week)\s*(\d+)\]/i);
@@ -568,12 +595,58 @@
   }
 
   const SEED_WORKS = [
-    // ================= สัปดาห์ที่ 3 =================
+    // ================= สัปดาห์ที่ 4: การวิเคราะห์และออกแบบเชิงวัตถุ =================
+    {
+      id: "d4000000-0000-0000-0000-000000000001",
+      title: "คู่มือสรุป: การวิเคราะห์และออกแบบระบบเชิงวัตถุ (OOAD Cheat Sheet)",
+      description: "สไลด์นำเสนอสรุปเนื้อหาการวิเคราะห์และออกแบบระบบเชิงวัตถุ (OOAD & UML Cheat Sheet) จบครบใน 10 หน้า สไตล์คลีนๆ ครอบคลุมการวิเคราะห์ความต้องการ (What) vs การออกแบบระบบ (How), 4 องค์ประกอบพื้นฐาน (Class, Object, Attribute, Method), 3 หัวใจสำคัญของ OOAD (Inheritance, Polymorphism, Encapsulation), การมองภาพรวมความสัมพันธ์ (Abstraction: Association, Aggregation, Generalization), Use Case Diagram, Class Diagram (- Private, + Public), Behavioral Diagrams, Component & Deployment และสรุปกระบวนการแบบ Iterative ทั้งหมด 10 หน้า [หน่วยการเรียนรู้ที่ 4]",
+      work_date: "2026-11-19",
+      image_path: "imeges/week4/slide-1.jpg",
+      week: 4,
+      slides: [
+        "imeges/week4/slide-1.jpg",
+        "imeges/week4/slide-2.jpg",
+        "imeges/week4/slide-3.jpg",
+        "imeges/week4/slide-4.jpg",
+        "imeges/week4/slide-5.jpg",
+        "imeges/week4/slide-6.jpg",
+        "imeges/week4/slide-7.jpg",
+        "imeges/week4/slide-8.jpg",
+        "imeges/week4/slide-9.jpg",
+        "imeges/week4/slide-10.jpg"
+      ]
+    },
+    {
+      id: "d4000000-0000-0000-0000-000000000002",
+      title: "ผังสรุปความรู้: การวิเคราะห์และออกแบบเชิงวัตถุ (OOAD Mind Map)",
+      description: "[สัปดาห์ที่ 4] ผังสรุปสาระสำคัญหน่วยการเรียนรู้ที่ 4 เรื่องกระบวนการคิดวิเคราะห์และออกแบบเชิงวัตถุ (OOAD) ครอบคลุมความหมายและกระบวนการสำคัญ (Analysis, Design, Development, Testing), องค์ประกอบคลาสและวัตถุ, 3 เสาหลัก OOP, ความสัมพันธ์ 4 รูปแบบ (Classification, Association, Aggregation, Generalization) และ 5 ประโยชน์ของการออกแบบเชิงวัตถุ",
+      work_date: "2026-11-19",
+      image_path: "imeges/week4/work-mindmap.jpg",
+      week: 4
+    },
+    {
+      id: "d4000000-0000-0000-0000-000000000003",
+      title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 4 (10 ข้อ)",
+      description: "[สัปดาห์ที่ 4] แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 4 เรื่องแนวคิดการเขียนโปรแกรมและการวิเคราะห์ออกแบบเชิงวัตถุ พร้อมเฉลยข้อสอบครบทั้ง 10 ข้อ",
+      work_date: "2026-11-19",
+      image_path: "imeges/week4/work-quiz.jpg",
+      week: 4
+    },
+    {
+      id: "d4000000-0000-0000-0000-000000000004",
+      title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 4 เรื่อง กระบวนการคิดวิเคราะห์และออกแบบเชิงวัตถุ",
+      description: "[สัปดาห์ที่ 4] แบบฝึกหัดหน่วยการเรียนรู้ที่ 4 สรุปตอบคำถาม 5 ข้อ: อธิบายกระบวนการคิดวิเคราะห์และออกแบบเชิงวัตถุ, ความหมายของการออกแบบเชิงวัตถุ, ตัวอย่างการสร้าง Class Student (Attributes, Operation), สัญลักษณ์การเข้าถึงสมาชิกในซับคลาส (+) และกระบวนการพัฒนาของ Abstraction (Data Abstraction & Behavior Abstraction)",
+      work_date: "2026-11-19",
+      image_path: "imeges/week4/work-exercise.jpg",
+      week: 4
+    },
+
+    // ================= สัปดาห์ที่ 3: การออกแบบระบบ =================
     {
       id: "c3000000-0000-0000-0000-000000000001",
-      title: "โรงงานประกอบวัตถุ: หลักการและแนวคิดเชิงวัตถุ (OOP Concepts)",
-      description: "สไลด์นำเสนอสรุปเนื้อหาหลักการและแนวคิดเชิงวัตถุ เข้าใจง่าย สไตล์การ์ตูนโรงงานประกอบวัตถุ ครอบคลุม Object, Class และ 4 เสาหลัก OOP (Encapsulation, Inheritance, Polymorphism, Abstraction) ทั้งหมด 15 หน้า [หน่วยการเรียนรู้ที่ 2]",
-      work_date: "2026-11-05",
+      title: "หลักการออกแบบระบบด้วย Unified Modeling Language (UML)",
+      description: "สไลด์นำเสนอสรุปเนื้อหาหลักการออกแบบระบบด้วยภาษา UML (Unified Modeling Language) พิมพ์เขียวมาตรฐานระดับสากลแห่งวิศวกรรมซอฟต์แวร์ ครอบคลุม The UML Architecture (Things, Relationships, Diagrams), โครงสร้างแม่แบบ Class & Object Diagram, Interaction Models (Sequence & Collaboration), Process Workflow (Activity Diagram), วงจรชีวิต State Diagram, Physical Architecture (Component & Deployment) และ Master Matrix 9 ไดอะแกรมหลัก ทั้งหมด 11 หน้า [หน่วยการเรียนรู้ที่ 3]",
+      work_date: "2026-11-12",
       image_path: "imeges/week3/slide-1.jpg",
       week: 3,
       slides: [
@@ -587,38 +660,35 @@
         "imeges/week3/slide-8.jpg",
         "imeges/week3/slide-9.jpg",
         "imeges/week3/slide-10.jpg",
-        "imeges/week3/slide-11.jpg",
-        "imeges/week3/slide-12.jpg",
-        "imeges/week3/slide-13.jpg",
-        "imeges/week3/slide-14.jpg",
-        "imeges/week3/slide-15.jpg"
+        "imeges/week3/slide-11.jpg"
       ]
     },
     {
       id: "c3000000-0000-0000-0000-000000000002",
-      title: "ผังสรุปความรู้: หลักการและแนวคิดเชิงวัตถุ (OOP Mind Map)",
-      description: "[สัปดาห์ที่ 3] สรุปสาระสำคัญหน่วยการเรียนรู้ที่ 2 ความหมายและองค์ประกอบของวัตถุ ขอบเขตระบบ ความสัมพันธ์และคลาส (Object & Class)",
-      work_date: "2026-11-05",
-      image_path: "imeges/week3/work-mindmap.jpg?v=2",
+      title: "ผังสรุปความรู้: การออกแบบระบบด้วยภาษา UML (UML Mind Map)",
+      description: "[สัปดาห์ที่ 3] ผังสรุปสาระสำคัญหน่วยการเรียนรู้ที่ 3 เรื่องหลักการออกแบบระบบด้วย UML ครอบคลุมความหมายและประโยชน์ของ UML, 3 องค์ประกอบพื้นฐาน (Things, Relationships, Diagrams), แผนภาพด้านโครงสร้าง (Class, Object, Component, Deployment) และแผนภาพด้านพฤติกรรมและการโต้ตอบ (Use Case, Activity, Statechart, Sequence, Collaboration)",
+      work_date: "2026-11-12",
+      image_path: "imeges/week3/work-mindmap.jpg",
       week: 3
     },
     {
       id: "c3000000-0000-0000-0000-000000000003",
-      title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 2 (10 ข้อ)",
-      description: "[สัปดาห์ที่ 3] แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 2 หลักการและแนวคิดเชิงวัตถุ พร้อมเฉลย 10 ข้อ",
-      work_date: "2026-11-05",
+      title: "แบบทดสอบหลังเรียน: หน่วยการเรียนรู้ที่ 3 (10 ข้อ)",
+      description: "[สัปดาห์ที่ 3] แบบทดสอบวัดผลการเรียนรู้หลังเรียน หน่วยการเรียนรู้ที่ 3 เรื่องหลักการออกแบบระบบด้วย UML พร้อมเฉลยและคิวอาร์โค้ดสแกนทำแบบทดสอบ ครอบคลุม 10 ข้อ",
+      work_date: "2026-11-12",
       image_path: "imeges/week3/work-quiz.jpg",
       week: 3
     },
     {
       id: "c3000000-0000-0000-0000-000000000004",
-      title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 2",
-      description: "[สัปดาห์ที่ 3] แบบฝึกหัดหน่วยการเรียนรู้ที่ 2 เรื่องหลักการและแนวคิดเชิงวัตถุ ตัวอย่าง Object, Attribute, Activity, Behavior และการบำรุงรักษาซอฟต์แวร์",
-      work_date: "2026-11-05",
+      title: "แบบฝึกหัดท้ายบท: สรุปคำตอบหน่วยการเรียนรู้ที่ 3 เรื่อง หลักการออกแบบ",
+      description: "[สัปดาห์ที่ 3] แบบฝึกหัดหน่วยการเรียนรู้ที่ 3 สรุปตอบคำถาม 5 ข้อ: อธิบายความหมายของ UML (Unified Modeling Language), องค์ประกอบ 3 ส่วนหลัก (สัญลักษณ์, ไดอะแกรม, แนวทางการใช้งาน), ไดอะแกรม 14 ประเภท, ความหมาย Use Case Diagram และหลักการทำงานของ Sequence Diagram",
+      work_date: "2026-11-12",
       image_path: "imeges/week3/work-exercise.jpg",
       week: 3
     },
-    // ================= สัปดาห์ที่ 2 =================
+
+    // ================= สัปดาห์ที่ 2: การพัฒนาระบบสารสนเทศ =================
     {
       id: "a1000000-0000-0000-0000-000000000001",
       title: "The Creator's Playbook: ถอดรหัส SDLC",
@@ -673,6 +743,18 @@
     if (Array.isArray(work.slides) && work.slides.length > 0) {
       return work.slides;
     }
+    if (
+      work.id === "d4000000-0000-0000-0000-000000000001" ||
+      (work.title && (work.title.includes("OOAD") || work.title.includes("การวิเคราะห์และออกแบบระบบเชิงวัตถุ") || work.title.includes("การวิเคราะห์และออกแบบเชิงวัตถุ")))
+    ) {
+      return Array.from({ length: 10 }, (_, i) => `imeges/week4/slide-${i + 1}.jpg`);
+    }
+    if (
+      work.id === "c3000000-0000-0000-0000-000000000001" ||
+      (work.title && (work.title.includes("หลักการออกแบบระบบ") || work.title.includes("UML") || work.title.includes("การออกแบบระบบ")))
+    ) {
+      return Array.from({ length: 11 }, (_, i) => `imeges/week3/slide-${i + 1}.jpg`);
+    }
     if (work.id === "a1000000-0000-0000-0000-000000000001" || (work.title && work.title.includes("Creator's Playbook"))) {
       return [
         "imeges/week2/slide-1.jpg",
@@ -690,19 +772,14 @@
         "imeges/week2/slide-13.jpg"
       ];
     }
-    if (
-      work.id === "c3000000-0000-0000-0000-000000000001" ||
-      (work.title && work.title.includes("โรงงานประกอบวัตถุ"))
-    ) {
-      return Array.from({ length: 15 }, (_, i) => `imeges/week3/slide-${i + 1}.jpg`);
-    }
     if (typeof work.description === "string") {
       const match = work.description.match(/\[slides:\s*([^\]]+)\]/i);
       if (match) {
         const val = match[1].trim();
         if (/^\d+$/.test(val)) {
           const count = parseInt(val, 10);
-          const weekFolder = getWorkWeek(work) === 3 ? "week3" : "week2";
+          const weekNum = getWorkWeek(work);
+          const weekFolder = `week${weekNum || 2}`;
           return Array.from({ length: count }, (_, i) => `imeges/${weekFolder}/slide-${i + 1}.jpg`);
         }
         return val.split(",").map((s) => s.trim());
@@ -872,22 +949,43 @@
 
   function syncFilterUI() {
     if (worksFilterCurrent) {
-      worksFilterCurrent.textContent = currentWeek
-        ? `สัปดาห์ที่ ${currentWeek}`
-        : "ทั้งหมด (สัปดาห์ 1 - 15)";
+      if (currentWeek) {
+        const info = WEEK_INFO[currentWeek];
+        worksFilterCurrent.textContent = info
+          ? `สัปดาห์ที่ ${currentWeek}: ${info.title}`
+          : `สัปดาห์ที่ ${currentWeek}`;
+      } else {
+        worksFilterCurrent.textContent = "ทั้งหมด (สัปดาห์ 1 - 15)";
+      }
     }
+
+    const weeksWithWorks = new Set(works.map(getWorkWeek).filter(Boolean));
 
     weekPills.forEach((pill) => {
       const pillWeek = pill.dataset.week;
       const isActive = (currentWeek === null && pillWeek === "all") || (currentWeek !== null && pillWeek === String(currentWeek));
       pill.classList.toggle("is-active", isActive);
       pill.setAttribute("aria-selected", String(isActive));
+
+      const num = Number(pillWeek);
+      if (num && weeksWithWorks.has(num)) {
+        pill.classList.add("has-works");
+        if (WEEK_INFO[num]) {
+          pill.title = `สัปดาห์ที่ ${num}: ${WEEK_INFO[num].title}`;
+        }
+      } else {
+        pill.classList.remove("has-works");
+      }
     });
 
     dropdownItems.forEach((item) => {
       const itemWeek = item.dataset.week;
       const isSelected = (currentWeek === null && !itemWeek) || (currentWeek !== null && itemWeek === String(currentWeek));
       item.classList.toggle("is-selected", isSelected);
+      const num = Number(itemWeek);
+      if (num && WEEK_INFO[num]) {
+        item.title = `สัปดาห์ที่ ${num}: ${WEEK_INFO[num].title}`;
+      }
     });
   }
 
@@ -1035,7 +1133,69 @@
       return;
     }
 
+    let lastRenderedWeek = null;
+    let isFirstDivider = true;
+
+    if (currentWeek !== null && filteredWorks.length > 0) {
+      const weekMeta = WEEK_INFO[currentWeek] || {
+        title: `สัปดาห์ที่ ${currentWeek}`,
+        subtitle: `รายการผลงานในสัปดาห์ที่ ${currentWeek}`
+      };
+      const divider = makeElement("header", "works-week-divider is-single-week is-first");
+
+      const mainDiv = makeElement("div", "works-week-divider-main");
+      mainDiv.append(makeElement("span", "works-week-badge-pill", `สัปดาห์ที่ ${currentWeek}`));
+
+      const infoDiv = makeElement("div", "works-week-divider-info");
+      infoDiv.append(
+        makeElement("h2", "works-week-divider-title", weekMeta.title),
+        makeElement("span", "works-week-divider-sub", `${weekMeta.subtitle} • รวม ${filteredWorks.length} ชิ้นงาน`)
+      );
+      mainDiv.append(infoDiv);
+
+      const filterBtn = makeElement("button", "works-week-filter-action");
+      filterBtn.type = "button";
+      filterBtn.innerHTML = `← ดูผลงานทุกสัปดาห์`;
+      filterBtn.addEventListener("click", () => setWeekFilter(null));
+
+      divider.append(mainDiv, filterBtn);
+      grid.append(divider);
+    }
+
     for (const work of filteredWorks) {
+      const weekNum = getWorkWeek(work);
+
+      // Render week separation header/divider when viewing all weeks
+      if (currentWeek === null && weekNum && weekNum !== lastRenderedWeek) {
+        lastRenderedWeek = weekNum;
+        const weekMeta = WEEK_INFO[weekNum] || {
+          title: `สัปดาห์ที่ ${weekNum}`,
+          subtitle: `รายการผลงานในสัปดาห์ที่ ${weekNum}`
+        };
+        const weekWorksCount = filteredWorks.filter((w) => getWorkWeek(w) === weekNum).length;
+
+        const divider = makeElement("header", `works-week-divider ${isFirstDivider ? "is-first" : ""}`);
+        isFirstDivider = false;
+
+        const mainDiv = makeElement("div", "works-week-divider-main");
+        mainDiv.append(makeElement("span", "works-week-badge-pill", `สัปดาห์ที่ ${weekNum}`));
+
+        const infoDiv = makeElement("div", "works-week-divider-info");
+        infoDiv.append(
+          makeElement("h2", "works-week-divider-title", weekMeta.title),
+          makeElement("span", "works-week-divider-sub", `${weekMeta.subtitle} • รวม ${weekWorksCount} ชิ้นงาน`)
+        );
+        mainDiv.append(infoDiv);
+
+        const filterBtn = makeElement("button", "works-week-filter-action");
+        filterBtn.type = "button";
+        filterBtn.innerHTML = `ดูเฉพาะสัปดาห์นี้ <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>`;
+        filterBtn.addEventListener("click", () => setWeekFilter(weekNum));
+
+        divider.append(mainDiv, filterBtn);
+        grid.append(divider);
+      }
+
       const slides = getWorkSlides(work);
       const isSlideWork = Boolean(slides && slides.length > 1);
 
@@ -1044,7 +1204,6 @@
 
       // Badges row
       const badgesRow = makeElement("div", "work-card-badges");
-      const weekNum = getWorkWeek(work);
       if (weekNum) {
         badgesRow.append(makeElement("span", "work-week-badge", `สัปดาห์ที่ ${weekNum}`));
       }
